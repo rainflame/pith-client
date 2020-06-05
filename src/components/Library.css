@@ -1,0 +1,6 @@
+.library-wrapper {
+    max-width: 600px;
+    max-height: 50vh;
+    width: 100%;
+    background-color: aqua;
+}

@@ -1,0 +1,7 @@
+.block {
+    border: 1px solid white;
+}
+
+.block:hover {
+    border: 1px solid black;
+}

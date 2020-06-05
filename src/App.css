@@ -1,0 +1,10 @@
+:root {
+  --column-padding: 10px;
+  --column-width: 550px;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}

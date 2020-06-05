@@ -1,0 +1,36 @@
+:root {
+    --d-header-height: 40px;
+    --d-footer-height: 60px;
+}
+
+.discussion-wrapper {
+    max-width: var(--column-width);
+    height: calc(100vh - var(--column-padding) * 2);
+    width: 100%;
+    padding: var(--column-padding);
+    background-color: gray;
+}
+
+.discussion-overflow-wrapper {
+    height: calc(
+        100% - var(--d-header-height) - var(--d-footer-height) -
+            var(--column-padding) * 2
+    );
+    overflow-y: auto;
+}
+
+.discussion {
+    min-height: calc(
+        100% - var(--d-header-height) - var(--d-footer-height) -
+            var(--column-padding) * 2
+    );
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    align-content: flex-end;
+}
+
+.discussion-header {
+    height: var(--d-header-height);
+    margin: 0;
+}

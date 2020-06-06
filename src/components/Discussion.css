@@ -9,6 +9,7 @@
     width: 100%;
     padding: var(--column-padding);
     background-color: gray;
+    position: relative;
 }
 
 .discussion-overflow-wrapper {
@@ -16,7 +17,8 @@
         100% - var(--d-header-height) - var(--d-footer-height) -
             var(--column-padding) * 2
     );
-    overflow-y: auto;
+    /*max-height: 80%;*/
+    overflow-y: scroll;
 }
 
 .discussion {

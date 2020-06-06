@@ -1,0 +1,10 @@
+.post-editor {
+	display: flex;
+	align-items: flex-end;
+	flex-wrap: wrap;
+	align-content: flex-end;
+	position: absolute;
+	bottom: 0;
+	max-width: calc(var(--column-width) - var(--column-padding));
+	width: 100%;
+}

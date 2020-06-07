@@ -8,7 +8,7 @@ class Block extends React.Component {
 		this.handleChange = this.handleChange.bind(this);
 		this.handleKeypress = this.handleKeypress.bind(this);
 		this.checkFocus = this.checkFocus.bind(this);
-		this.checkHeight();
+		this.checkHeight = this.checkHeight.bind(this);
 	}
 
 	checkFocus() {

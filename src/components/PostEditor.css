@@ -3,8 +3,15 @@
 	align-items: flex-end;
 	flex-wrap: wrap;
 	align-content: flex-end;
+
 	position: absolute;
 	bottom: 0;
-	max-width: calc(var(--column-width) - var(--column-padding));
-	width: 100%;
+	padding: 30px 0;
+	/*max-width: calc(var(--column-width) - var(--column-padding) * 2);*/
+	width: calc(100% - var(--column-padding) * 2);
+	background-color: grey;
+}
+
+button {
+	margin-top: 20px;
 }

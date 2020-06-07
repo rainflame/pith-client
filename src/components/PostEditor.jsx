@@ -8,22 +8,14 @@ class PostEditor extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            blocks: [],
-            value: "",
+            blocks: [""],
+            focusIndex: 0,
         };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleKeypress = this.handleKeypress.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
 
-    handleChange(e) {
-        if (e.target.value.slice(-1) === "\n") {
-            const blocks = this.state.blocks;
-            blocks.push(this.state.value);
-            this.setState({ blocks: blocks, value: "" });
-        } else {
-            this.setState({ value: e.target.value });
-        }
+        this.updateBlock = this.updateBlock.bind(this);
+        this.removeBlock = this.removeBlock.bind(this);
+        this.addBlock = this.addBlock.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidUpdate() {
@@ -36,46 +28,58 @@ class PostEditor extends React.Component {
         document.getElementsByClassName(
             "discussion-overflow-wrapper"
         )[0].style.height = `${wrapperHeight - height - 40}px`;
-
-        console.log(wrapperHeight);
     }
 
     handleSubmit(e) {
         e.preventDefault();
     }
 
-    handleKeypress(e) {
-        if (e.keyCode === 8) {
-            if (this.state.value === "" && this.state.blocks.length > 0) {
-                const blocks = this.state.blocks;
-                const value = blocks.splice(-1, 1);
-                this.setState({ blocks: blocks, value: value });
-                e.preventDefault();
+    updateBlock(index, value) {
+        const blocks = this.state.blocks;
+        blocks[index] = value;
+        this.setState({ blocks: blocks, focusIndex: index });
+    }
+
+    addBlock(index, oldContent, newContent) {
+        const blocks = this.state.blocks;
+        blocks[index] = oldContent;
+        // add in the new content after the old index
+        blocks.splice(index + 1, 0, newContent);
+        this.setState({ blocks: blocks, focusIndex: index + 1 });
+    }
+
+    removeBlock(index, oldContent) {
+        const blocks = this.state.blocks;
+        if (blocks.length > 1) {
+            // if there was content on the current line, add it to the previous one
+            if (oldContent) {
+                blocks[index - 1] += oldContent;
             }
+            // remove the block at the current index
+            blocks.splice(index, 1);
+            this.setState({ blocks: blocks, focusIndex: index - 1 });
         }
-        // probably could add the return key here instead of doing
-        // it separately above
     }
 
     render() {
-        const blocks = this.state.blocks.map((block) => (
-            <Block key={btoa(block)} content={block} />
+        const blocks = this.state.blocks.map((block, index) => (
+            <Block
+                content={block}
+                editable
+                focus={this.state.focusIndex === index}
+                onEdit={(value) => this.updateBlock(index, value)}
+                onNewline={(oldContent, newContent) =>
+                    this.addBlock(index, oldContent, newContent)
+                }
+                onDelete={(oldContent) => this.removeBlock(index, oldContent)}
+            />
         ));
 
         return (
             <div className="post-editor">
                 <Post>{blocks}</Post>
-                <form onSubmit={this.handleSubmit}>
-                    <label>
-                        <textarea
-                            type="text"
-                            value={this.state.value}
-                            onChange={this.handleChange}
-                            onKeyDown={this.handleKeypress}
-                        />
-                    </label>
-                    <input type="submit" value="Submit" />
-                </form>
+                <button onClick={this.handleSubmit}>Add post</button>
+                <button onClick={this.props.onClose}>Cancel</button>
             </div>
         );
     }

@@ -1,6 +1,8 @@
 import React from "react";
-import Block from "./Block";
+import EditableBlock from "./EditableBlock";
 import Post from "./Post";
+
+import { createPost } from "../api";
 
 import "./PostEditor.css";
 
@@ -31,7 +33,10 @@ class PostEditor extends React.Component {
     }
 
     handleSubmit(e) {
-        e.preventDefault();
+        createPost(this.state.blocks, (data) => {
+            console.log("Added post!");
+            this.props.onClose();
+        });
     }
 
     updateBlock(index, value) {
@@ -63,7 +68,7 @@ class PostEditor extends React.Component {
 
     render() {
         const blocks = this.state.blocks.map((block, index) => (
-            <Block
+            <EditableBlock
                 content={block}
                 editable
                 focus={this.state.focusIndex === index}

@@ -1,38 +1,68 @@
 import openSocket from "socket.io-client";
 const socket = openSocket("http://localhost:5000");
 
-socket.on("~connect", (res) => {
-	console.log(res.data);
-});
+let user = {
+	id: "",
+};
 
-// function subscribeToTimer(cb) {
-// 	socket.on("timer", (timestamp) => cb(null, timestamp));
-// 	socket.emit("subscribeToTimer", 1000);
-// }
+const connectAndCreateUser = (func) => {
+	// get the client's IP address
+	const req = new Request("https://rainflame.com/cdn-cgi/trace");
+	fetch(req)
+		.then((response) => response.text())
+		.then((text) => {
+			const ip = text.substr(text.indexOf("ip=") + 3, 37);
+
+			const payload = { user_id: btoa(ip) };
+			socket.emit("create_user", payload, (data) => {
+				// save the user id so we can use it later when creating posts etc
+				user.id = JSON.parse(data)._id;
+				console.log("Connected!");
+				func();
+			});
+		});
+};
 
 const ensureConnectedThen = (func) => {
-	if (socket.connected) {
+	if (socket.connected && user.id) {
 		func();
 	} else {
-		return Error("Not connected! Reload the page to reconnect.");
+		connectAndCreateUser(func);
 	}
 };
 
-const createUser = (ip, func) => {
+const createPost = (data, func) => {
 	ensureConnectedThen(() => {
-		//socket.on("~create_user", (data) => func(data));
-		socket.emit("create_user", { user_id: ip }, (data) => {
-			func(data);
+		const payload = { user_id: user.id, blocks: data };
+		socket.emit("create_post", payload, (data) => {
+			func(JSON.parse(data));
 		});
 	});
 };
 
-// const createPost = (data, func) => {
-// 	if (socket.connected) {
-// 		socket.emit("");
-// 	} else {
-// 		return Error("Not Connected");
-// 	}
-// };
+const getPosts = (func) => {
+	ensureConnectedThen(() => {
+		socket.emit("get_posts", (data) => {
+			func(JSON.parse(data));
+		});
+	});
+};
 
-export { createUser };
+const getBlock = (data, func) => {
+	ensureConnectedThen(() => {
+		const payload = { block_id: data };
+		socket.emit("get_block", payload, (data) => {
+			func(JSON.parse(data));
+		});
+	});
+};
+
+const listenForCreatedPosts = (func) => {
+	ensureConnectedThen(() => {
+		socket.on("post_created", (data) => {
+			func(JSON.parse(data));
+		});
+	});
+};
+
+export { createPost, getPosts, getBlock, listenForCreatedPosts };

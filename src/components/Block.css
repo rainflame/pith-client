@@ -1,5 +1,18 @@
-.block:hover {
+.block-wrapper:hover {
 	background-color: #e0e0e0e0;
+}
+
+.block-wrapper:hover .block {
+	background-color: #d0d0d0d0;
+}
+
+.block-wrapper .block {
+	margin: 0;
+	width: calc(100% - 10px);
+}
+
+.block-wrapper {
+	margin: 5px;
 }
 
 .block {
@@ -10,6 +23,17 @@
 	border: none;
 	margin: 5px;
 	padding: 5px;
+}
+
+.block-controls > div {
+	cursor: pointer;
+	float: right;
+}
+
+.block-controls {
+	height: 20px;
+	padding: 5px;
+	margin-top: -5px;
 }
 
 textarea {

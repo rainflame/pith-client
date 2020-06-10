@@ -22,7 +22,6 @@ class Discussion extends React.Component {
         });
 
         listenForCreatedPosts((data) => {
-            console.log(data);
             const posts = this.state.posts;
             posts.push(data);
             this.setState({ posts: posts });
@@ -44,7 +43,7 @@ class Discussion extends React.Component {
 
         const discussion = this.state.posts.map((post) => {
             const blocks = post.blocks.map((block) => {
-                return <Block key={block} id={block} />;
+                return <Block key={block} id={block} save />;
             });
             return <Post key={post._id}>{blocks}</Post>;
         });

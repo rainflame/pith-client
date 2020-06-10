@@ -48,6 +48,24 @@ const getPosts = (func) => {
 	});
 };
 
+const saveBlock = (data, func) => {
+	ensureConnectedThen(() => {
+		const payload = { user_id: user.id, block_id: data };
+		socket.emit("save_block", payload, (data) => {
+			func(JSON.parse(data));
+		});
+	});
+};
+
+const getSavedBlocks = (func) => {
+	ensureConnectedThen(() => {
+		const payload = { user_id: user.id };
+		socket.emit("get_saved_blocks", payload, (data) => {
+			func(JSON.parse(data));
+		});
+	});
+};
+
 const getBlock = (data, func) => {
 	ensureConnectedThen(() => {
 		const payload = { block_id: data };
@@ -65,4 +83,20 @@ const listenForCreatedPosts = (func) => {
 	});
 };
 
-export { createPost, getPosts, getBlock, listenForCreatedPosts };
+const listenForSavedBlocks = (func) => {
+	ensureConnectedThen(() => {
+		socket.on("block_saved", (data) => {
+			func(JSON.parse(data));
+		});
+	});
+};
+
+export {
+	createPost,
+	getPosts,
+	getBlock,
+	saveBlock,
+	listenForCreatedPosts,
+	listenForSavedBlocks,
+	getSavedBlocks,
+};

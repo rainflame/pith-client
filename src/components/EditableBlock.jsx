@@ -1,9 +1,15 @@
 import React from "react";
+import EmbedMenu from "./EmbedMenu";
+
 import "./Block.css";
 
 class EditableBlock extends React.Component {
 	constructor(props) {
 		super(props);
+
+		this.state = {
+			menu: false,
+		};
 
 		this.handleChange = this.handleChange.bind(this);
 		this.handleKeypress = this.handleKeypress.bind(this);
@@ -42,11 +48,19 @@ class EditableBlock extends React.Component {
 		if (e.keyCode === 8) {
 			// on delete key press
 			if (this.props.content === "") {
+				// delete the block
 				this.props.onDelete();
 				e.preventDefault();
 			} else if (this.inputRef.selectionStart === 0) {
+				// add the current content to the previous block and delete
 				this.props.onDelete(this.props.content);
 				e.preventDefault();
+			} else if (
+				this.state.menu &&
+				this.props.content.length <= this.state.index
+			) {
+				// when we delete the >, close the menu
+				this.setState({ menu: false });
 			}
 		} else if (e.keyCode === 13) {
 			// on enter/return key press
@@ -60,24 +74,36 @@ class EditableBlock extends React.Component {
 			// move the content after to a new block below
 			this.props.onNewline(reserved, selection);
 			e.preventDefault();
+		} else if (e.keyCode === 190) {
+			// on > open the menu
+			this.setState({ menu: true, index: this.props.content.length + 1 });
 		}
 
 		this.checkHeight();
 	}
 
 	render() {
+		let menu;
+
+		if (this.state.menu) {
+			menu = <EmbedMenu />;
+		}
+
 		return (
-			<textarea
-				className="block"
-				placeholder="New block"
-				type="text"
-				ref={(input) => {
-					this.inputRef = input;
-				}}
-				value={this.props.content}
-				onChange={this.handleChange}
-				onKeyDown={this.handleKeypress}
-			/>
+			<div>
+				<textarea
+					className="block"
+					placeholder="New block"
+					type="text"
+					ref={(input) => {
+						this.inputRef = input;
+					}}
+					value={this.props.content}
+					onChange={this.handleChange}
+					onKeyDown={this.handleKeypress}
+				/>
+				{menu}
+			</div>
 		);
 	}
 }

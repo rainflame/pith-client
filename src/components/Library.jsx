@@ -31,7 +31,12 @@ class Library extends React.Component {
 		const blocks = this.state.blocks.map((block) => {
 			return <Block key={block} id={block} save={false} />;
 		});
-		return <div className="library-wrapper">{blocks}</div>;
+		return (
+			<div className="library-wrapper">
+				<h2 className="discussion-header">Library</h2>
+				{blocks}
+			</div>
+		);
 	}
 }
 

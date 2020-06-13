@@ -10,7 +10,7 @@ class Post extends React.Component {
 
     render() {
         return (
-            <div className="post">
+            <div className="post" style={this.props.style}>
                 <h4 className="post-title">New Post</h4>
                 {this.props.children}
             </div>

@@ -21,15 +21,7 @@ class PostEditor extends React.Component {
     }
 
     componentDidUpdate() {
-        // this is kind of a stupid way of shrinking the chat content
-        const height = document.getElementsByClassName("post-editor")[0]
-            .clientHeight;
-        const wrapperHeight = document.getElementsByClassName(
-            "discussion-wrapper"
-        )[0].clientHeight;
-        document.getElementsByClassName(
-            "discussion-overflow-wrapper"
-        )[0].style.height = `${wrapperHeight - height - 40}px`;
+        this.props.onChange();
     }
 
     handleSubmit(e) {
@@ -82,7 +74,7 @@ class PostEditor extends React.Component {
 
         return (
             <div className="post-editor">
-                <Post>{blocks}</Post>
+                <Post style={{ backgroundColor: "#8aa7fc" }}>{blocks}</Post>
                 <button onClick={this.handleSubmit}>Add post</button>
                 <button onClick={this.props.onClose}>Cancel</button>
             </div>

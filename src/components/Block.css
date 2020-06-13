@@ -12,10 +12,12 @@
 }
 
 .block-wrapper {
+	border: 1px solid grey;
 	margin: 5px;
 }
 
 .block {
+	border: 1px solid grey;
 	font-family: sans-serif;
 	font-size: 100%;
 	resize: none;

@@ -1,6 +1,35 @@
 .library-wrapper {
-    max-width: 600px;
-    max-height: 50vh;
-    width: 100%;
-    background-color: aqua;
+	max-width: var(--column-width);
+	/*height: calc(100vh - var(--column-padding) * 2);*/
+	width: 100%;
+	padding: var(--column-padding);
+	background-color: gray;
+	position: relative;
 }
+
+/*.discussion-overflow-wrapper {
+    height: calc(
+        100% - var(--d-header-height) - var(--d-footer-height) -
+            var(--column-padding) * 2
+    );
+    /*max-height: 80%;*/
+/*   overflow-y: scroll;
+}
+
+.discussion {
+    min-height: calc(
+        100% - var(--d-header-height) - var(--d-footer-height) -
+            var(--column-padding) * 2
+    );
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    align-content: flex-end;
+}
+
+.discussion-header {
+    height: var(--d-header-height);
+    margin: 0;
+}
+*/

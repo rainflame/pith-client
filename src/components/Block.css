@@ -1,19 +1,19 @@
-.block-wrapper:hover {
+/*.block-wrapper:hover {
 	background-color: #e0e0e0e0;
 }
 
 .block-wrapper:hover .block {
 	background-color: #d0d0d0d0;
-}
+}*/
 
-.block-wrapper .block {
+.block-wrapper .block .block-controls {
 	margin: 0;
 	width: calc(100% - 10px);
+	margin: 5px;
 }
 
 .block-wrapper {
-	border: 1px solid grey;
-	margin: 5px;
+	margin: 10px 5px;
 }
 
 .block {
@@ -21,9 +21,6 @@
 	font-family: sans-serif;
 	font-size: 100%;
 	resize: none;
-	width: calc(100% - 20px);
-	border: none;
-	margin: 5px;
 	padding: 5px;
 }
 
@@ -33,11 +30,21 @@
 }
 
 .block-controls {
-	height: 20px;
-	padding: 5px;
+	overflow: auto;
+	padding-top: 5px;
 	margin-top: -5px;
 }
 
+.block-button {
+	display: inline-block;
+	padding: 5px;
+	border-left: 1px solid grey;
+	border-right: 1px solid grey;
+	border-bottom: 1px solid grey;
+}
+
 textarea {
+	width: calc(100% - 20px);
+	margin: 10px 5px;
 	background-color: #e0e0e0e0;
 }

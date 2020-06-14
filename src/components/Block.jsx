@@ -1,6 +1,11 @@
 import React from "react";
-
-import { getBlock, saveBlock } from "../api";
+import TagEditor from "./TagEditor";
+import {
+	getBlock,
+	saveBlock,
+	addTagToBlock,
+	listenForUpdatedBlocks,
+} from "../api";
 
 import "./Block.css";
 
@@ -10,14 +15,24 @@ class Block extends React.Component {
 		this.state = {
 			id: this.props.id,
 			content: "Loading...",
+			tags: [],
 		};
 
 		this.saveBlock = this.saveBlock.bind(this);
+		this.addTagToBlock = this.addTagToBlock.bind(this);
 	}
 
 	componentDidMount() {
 		getBlock(this.state.id, (data) => {
-			this.setState({ content: data.body });
+			this.setState({ content: data.body, tags: data.tags });
+		});
+
+		// unsure if it's a good idea to have this listener in each of the block
+		// components, but it works for now
+		listenForUpdatedBlocks((data) => {
+			if (data._id === this.state.id) {
+				this.setState({ tags: data.tags, content: data.body });
+			}
 		});
 	}
 
@@ -27,19 +42,32 @@ class Block extends React.Component {
 		});
 	}
 
+	addTagToBlock(tag) {
+		addTagToBlock({ id: this.state.id, tag: tag }, (data) => {
+			console.log("Added tag!");
+		});
+	}
+
 	render() {
 		let save;
+
 		if (this.props.save) {
 			save = (
-				<div className="block-controls">
-					<div onClick={this.saveBlock}>Save</div>
+				<div className="block-button" onClick={this.saveBlock}>
+					Save
 				</div>
 			);
 		}
 		return (
 			<div className="block-wrapper">
 				<div className="block">{this.state.content}</div>
-				{save}
+				<div className="block-controls">
+					{save}
+					<TagEditor
+						tags={this.state.tags}
+						onAdd={this.addTagToBlock}
+					/>
+				</div>
 			</div>
 		);
 	}

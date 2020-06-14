@@ -3,6 +3,10 @@
 	--column-width: 550px;
 }
 
+body {
+	font-size: 14px;
+}
+
 .wrapper {
 	display: flex;
 	justify-content: center;

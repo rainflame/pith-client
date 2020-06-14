@@ -34,7 +34,7 @@ const ensureConnectedThen = (func, listenEvent) => {
 			//console.log("API busy, waiting to send request");
 			setTimeout(() => {
 				ensureConnectedThen(func, listenEvent);
-			}, 100);
+			}, 50);
 		} else {
 			waitingForResponse = listenEvent ? false : true;
 			//console.log("Sent request");
@@ -50,82 +50,94 @@ const ensureConnectedThen = (func, listenEvent) => {
 		setTimeout(() => {
 			//console.log("waiting!");
 			ensureConnectedThen(func, listenEvent);
-		}, 100);
+		}, 50);
+	}
+};
+
+const listener = (eventName, func) => {
+	ensureConnectedThen(() => {
+		socket.on(eventName, (data) => {
+			waitingForResponse = false;
+			func(JSON.parse(data));
+		});
+	}, true);
+};
+
+const setter = (eventName, payload, func) => {
+	ensureConnectedThen(() => {
+		socket.emit(eventName, payload, (data) => {
+			waitingForResponse = false;
+			func(JSON.parse(data));
+		});
+	}, false);
+};
+
+const getter = (eventName, payload, func) => {
+	if (payload) {
+		ensureConnectedThen(() => {
+			socket.emit(eventName, payload, (data) => {
+				waitingForResponse = false;
+				func(JSON.parse(data));
+			});
+		}, false);
+	} else {
+		ensureConnectedThen(() => {
+			socket.emit(eventName, (data) => {
+				waitingForResponse = false;
+				func(JSON.parse(data));
+			});
+		}, false);
 	}
 };
 
 const createPost = (data, func) => {
 	console.log("API: createPost");
-	ensureConnectedThen(() => {
-		const payload = { user_id: user.id, blocks: data };
-		socket.emit("create_post", payload, (data) => {
-			waitingForResponse = false;
-			func(JSON.parse(data));
-		});
-	}, false);
+	setter("create_post", { user_id: user.id, blocks: data }, func);
 };
 
 const getPosts = (func) => {
 	console.log("API: getPosts");
-	ensureConnectedThen(() => {
-		socket.emit("get_posts", (data) => {
-			waitingForResponse = false;
-			func(JSON.parse(data));
-		});
-	}, false);
+	getter("get_posts", null, func);
 };
 
 const saveBlock = (data, func) => {
 	console.log("API: saveBlock");
-	ensureConnectedThen(() => {
-		const payload = { user_id: user.id, block_id: data };
-		socket.emit("save_block", payload, (data) => {
-			waitingForResponse = false;
-			func(JSON.parse(data));
-		});
-	}, false);
+	setter("save_block", { user_id: user.id, block_id: data }, func);
 };
 
 const getSavedBlocks = (func) => {
 	console.log("API: getSavedBlocks");
-	ensureConnectedThen(() => {
-		const payload = { user_id: user.id };
-		socket.emit("get_saved_blocks", payload, (data) => {
-			waitingForResponse = false;
-			func(JSON.parse(data));
-		});
-	}, false);
+	getter("get_saved_blocks", { user_id: user.id }, func);
 };
 
 const getBlock = (data, func) => {
 	console.log("API: getBlock");
-	ensureConnectedThen(() => {
-		const payload = { block_id: data };
-		socket.emit("get_block", payload, (data) => {
-			waitingForResponse = false;
-			func(JSON.parse(data));
-		});
-	}, false);
+	getter("get_block", { block_id: data }, func);
+};
+
+const makeSearch = (data, func) => {
+	console.log("API: makeSearch");
+	getter("search", { query: data }, func);
 };
 
 const listenForCreatedPosts = (func) => {
 	console.log("API: listenForCreatedPosts");
-	ensureConnectedThen(() => {
-		socket.on("post_created", (data) => {
-			waitingForResponse = false;
-			func(JSON.parse(data));
-		});
-	}, true);
+	listener("post_created", func);
 };
 
 const listenForSavedBlocks = (func) => {
 	console.log("API: listenForSavedBlocks");
-	ensureConnectedThen(() => {
-		socket.on("block_saved", (data) => {
-			waitingForResponse = false;
-			func(JSON.parse(data));
-		});
-	}, true);
+	listener("block_saved", func);
+};
+
+const addTagToBlock = (data, func) => {
+	console.log("API: addTagToBlock");
+	setter("block_add_tag", { block_id: data.id, tag: data.tag }, func);
+};
+
+const listenForUpdatedBlocks = (func) => {
+	console.log("API: listenForUpdatedBlocks");
+	listener("updated_block", func);
 };
 
 export {
@@ -135,5 +147,8 @@ export {
 	saveBlock,
 	listenForCreatedPosts,
 	listenForSavedBlocks,
+	listenForUpdatedBlocks,
 	getSavedBlocks,
+	makeSearch,
+	addTagToBlock,
 };

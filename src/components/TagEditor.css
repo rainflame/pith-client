@@ -1,0 +1,32 @@
+.tags {
+	/*float: left;*/
+	display: inline-block;
+}
+
+.tag-wrapper {
+	float: left !important;
+	max-width: 250px;
+}
+
+.tag-input {
+	border: none;
+	padding: 5px;
+	font-size: 14px;
+	display: inline-block;
+	max-width: 100px;
+	border-left: 1px solid grey;
+	border-right: 1px solid grey;
+	border-bottom: 1px solid grey;
+}
+
+.tag {
+	/*to account for the overlapping borders*/
+	background-color: #8aa7fc;
+	cursor: default;
+	margin-right: -1px;
+	display: inline-block;
+	padding: 5px;
+	border-left: 1px solid grey;
+	border-right: 1px solid grey;
+	border-bottom: 1px solid grey;
+}

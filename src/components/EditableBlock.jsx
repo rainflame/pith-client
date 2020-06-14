@@ -74,9 +74,13 @@ class EditableBlock extends React.Component {
 			// move the content after to a new block below
 			this.props.onNewline(reserved, selection);
 			e.preventDefault();
-		} else if (e.keyCode === 190) {
+		} else if (e.keyCode === 220) {
 			// on > open the menu
-			this.setState({ menu: true, index: this.props.content.length + 1 });
+			const cursorInd = this.props.content.length + 1;
+			this.setState({
+				menu: true,
+				index: cursorInd,
+			});
 		}
 
 		this.checkHeight();
@@ -84,9 +88,13 @@ class EditableBlock extends React.Component {
 
 	render() {
 		let menu;
+		const query = this.props.content.substr(
+			this.state.index,
+			this.props.content.length
+		);
 
 		if (this.state.menu) {
-			menu = <EmbedMenu />;
+			menu = <EmbedMenu query={query} />;
 		}
 
 		return (

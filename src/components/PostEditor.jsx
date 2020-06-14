@@ -2,7 +2,7 @@ import React from "react";
 import EditableBlock from "./EditableBlock";
 import Post from "./Post";
 
-import { createPost } from "../api";
+import { createPost } from "../api/api";
 
 import "./PostEditor.css";
 

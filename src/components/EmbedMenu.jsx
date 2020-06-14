@@ -1,6 +1,6 @@
 import React from "react";
 
-import { makeSearch } from "../api";
+import { makeSearch } from "../api/api";
 
 import "./EmbedMenu.css";
 

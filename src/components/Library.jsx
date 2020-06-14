@@ -2,7 +2,7 @@ import React from "react";
 
 import Block from "./Block";
 
-import { listenForSavedBlocks, getSavedBlocks } from "../api";
+import { listenForSavedBlocks, getSavedBlocks } from "../api/api";
 
 import "./Library.css";
 

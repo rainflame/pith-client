@@ -3,7 +3,7 @@ import Post from "./Post";
 import Block from "./Block";
 import PostEditor from "./PostEditor";
 
-import { getPosts, listenForCreatedPosts } from "../api";
+import { getPosts, listenForCreatedPosts } from "../api/api";
 
 import "./Discussion.css";
 

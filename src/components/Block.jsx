@@ -5,7 +5,7 @@ import {
 	saveBlock,
 	addTagToBlock,
 	listenForUpdatedBlocks,
-} from "../api";
+} from "../api/api";
 
 import "./Block.css";
 

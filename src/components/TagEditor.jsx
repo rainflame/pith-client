@@ -59,6 +59,12 @@ class TagEditor extends React.Component {
 			return (
 				<div className="tag" key={tag}>
 					{tag}
+					<div
+						className="tag-close"
+						onClick={() => this.props.onRemove(tag)}
+					>
+						x
+					</div>
 				</div>
 			);
 		});

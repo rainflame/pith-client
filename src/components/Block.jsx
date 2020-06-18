@@ -4,6 +4,7 @@ import {
 	getBlock,
 	saveBlock,
 	addTagToBlock,
+	removeTagFromBlock,
 	listenForUpdatedBlocks,
 } from "../api/api";
 
@@ -20,6 +21,7 @@ class Block extends React.Component {
 
 		this.saveBlock = this.saveBlock.bind(this);
 		this.addTagToBlock = this.addTagToBlock.bind(this);
+		this.removeTagFromBlock = this.removeTagFromBlock.bind(this);
 	}
 
 	componentDidMount() {
@@ -48,6 +50,12 @@ class Block extends React.Component {
 		});
 	}
 
+	removeTagFromBlock(tag) {
+		removeTagFromBlock({ id: this.state.id, tag: tag }, (data) => {
+			console.log("Removed tag!");
+		});
+	}
+
 	render() {
 		let save;
 
@@ -66,6 +74,7 @@ class Block extends React.Component {
 					<TagEditor
 						tags={this.state.tags}
 						onAdd={this.addTagToBlock}
+						onRemove={this.removeTagFromBlock}
 					/>
 				</div>
 			</div>

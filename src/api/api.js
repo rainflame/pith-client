@@ -22,6 +22,10 @@ const addTagToBlock = (data, func) => {
 	setter("block_add_tag", { block_id: data.id, tag: data.tag }, func);
 };
 
+const removeTagFromBlock = (data, func) => {
+	setter("block_remove_tag", { block_id: data.id, tag: data.tag }, func);
+};
+
 const getSavedBlocks = (func) => {
 	getter("get_saved_blocks", { user_id: user.id }, func);
 };
@@ -52,6 +56,7 @@ export {
 	listenForSavedBlocks,
 	listenForUpdatedBlocks,
 	getSavedBlocks,
+	removeTagFromBlock,
 	makeSearch,
 	addTagToBlock,
 };

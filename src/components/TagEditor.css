@@ -30,3 +30,9 @@
 	border-right: 1px solid grey;
 	border-bottom: 1px solid grey;
 }
+
+.tag-close {
+	display: inline-block;
+	margin: 0 5px;
+	cursor: pointer;
+}

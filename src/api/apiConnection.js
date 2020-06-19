@@ -19,6 +19,8 @@ let counterTimeout;
 // the current job's elapsed time
 let elapsed = 0;
 
+let waitingForCreateUser = false;
+
 // saving some basic info for later use in api calls
 let user = {
 	id: "",
@@ -49,10 +51,13 @@ function nextEvent() {
 	// end the previous job's counter
 	endCounter();
 
-	if (!socket.connected || user.id.length === 0) {
+	if ((!socket.connected || user.id.length === 0) && !waitingForCreateUser) {
+		waitingForCreateUser = true;
+		console.log("Connecting to server");
 		connectAndCreateUser();
-	} else {
+	} else if (!waitingForCreateUser) {
 		if (queue.length > 0) {
+			console.log("Next event");
 			// take the last job off the queue
 			const job = queue.pop();
 			// if we're going to be waiting for a reply from the server, start the counter
@@ -83,6 +88,8 @@ function connectAndCreateUser() {
 			socket.emit("create_user", payload, (data) => {
 				// save the user id so we can use it later when creating posts etc
 				user.id = JSON.parse(data)._id;
+				waitingForCreateUser = false;
+				console.log("Server connected");
 				// now we're connected and can make the next request
 				nextEvent();
 			});
@@ -105,11 +112,18 @@ const listener = (eventName, func) => {
 	);
 };
 
-const setter = (eventName, payload, func) => {
+const setter = (eventName, payload, addAuth, func) => {
 	const id = uuidv4();
 	addToQueue(
 		() => {
 			console.log(`Starting "${eventName}" (request ${id})`);
+			// if we have to add the user's id, do that now (assuming that we've connected)
+			if (addAuth) {
+				if (!payload) {
+					payload = {};
+				}
+				payload["user_id"] = user.id;
+			}
 			socket.emit(eventName, payload, (data) => {
 				console.log(`Completed "${eventName}" (request ${id})`);
 				nextEvent();
@@ -121,9 +135,9 @@ const setter = (eventName, payload, func) => {
 	);
 };
 
-const getter = (eventName, payload, func) => {
-	if (payload) {
-		setter(eventName, payload, func);
+const getter = (eventName, payload, addAuth, func) => {
+	if (payload || addAuth) {
+		setter(eventName, payload, addAuth, func);
 	} else {
 		const id = uuidv4();
 		addToQueue(

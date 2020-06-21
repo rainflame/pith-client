@@ -59,7 +59,7 @@ class EditableBlock extends React.Component {
 				this.state.menu &&
 				this.props.content.length <= this.state.index
 			) {
-				// when we delete the >, close the menu
+				// when we delete the \, close the menu
 				this.setState({ menu: false });
 			}
 		} else if (e.keyCode === 13) {
@@ -75,7 +75,7 @@ class EditableBlock extends React.Component {
 			this.props.onNewline(reserved, selection);
 			e.preventDefault();
 		} else if (e.keyCode === 220) {
-			// on > open the menu
+			// on \ open the menu
 			const cursorInd = this.props.content.length + 1;
 			this.setState({
 				menu: true,

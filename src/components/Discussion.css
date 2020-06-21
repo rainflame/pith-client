@@ -8,7 +8,6 @@
     height: calc(100vh - var(--column-padding) * 2);
     width: 100%;
     padding: var(--column-padding);
-    background-color: gray;
     position: relative;
 }
 
@@ -18,7 +17,7 @@
             var(--column-padding) * 2
     );
     /*max-height: 80%;*/
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .discussion {

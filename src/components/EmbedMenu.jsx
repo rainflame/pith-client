@@ -14,7 +14,8 @@ class EmbedMenu extends React.Component {
 	}
 
 	componentDidUpdate() {
-		if (this.props.query.length > 0) {
+		if (this.props.query.slice(-1) === " ") {
+			console.log("searching ", this.props.query);
 			makeSearch(this.props.query, (data) => {
 				console.log(data);
 			});

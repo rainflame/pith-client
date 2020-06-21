@@ -6,12 +6,19 @@ class TagEditor extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			visible: this.props.visible,
 			value: "",
 			editing: false,
 		};
 
 		this.handleKeypress = this.handleKeypress.bind(this);
 		this.handleChange = this.handleChange.bind(this);
+	}
+
+	componentDidUpdate() {
+		if (this.props.visible && !this.state.visible) {
+			this.setState({ visible: true, editing: true });
+		}
 	}
 
 	handleKeypress(e) {
@@ -68,6 +75,10 @@ class TagEditor extends React.Component {
 				</div>
 			);
 		});
+
+		if (!this.props.visible && tags.length === 0) {
+			return <div></div>;
+		}
 
 		return (
 			<div className="tag-wrapper">

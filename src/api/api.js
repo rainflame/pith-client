@@ -49,7 +49,7 @@ const listenForUpdatedBlocks = (func) => {
 
 // searching
 const makeSearch = (data, func) => {
-	getter("search", { query: data }, func);
+	getter("search_all", { query: data }, true, func);
 };
 
 export {

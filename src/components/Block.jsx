@@ -17,11 +17,14 @@ class Block extends React.Component {
 			id: this.props.id,
 			content: "Loading...",
 			tags: [],
+			controls: false,
+			tagEditor: false,
 		};
 
 		this.saveBlock = this.saveBlock.bind(this);
 		this.addTagToBlock = this.addTagToBlock.bind(this);
 		this.removeTagFromBlock = this.removeTagFromBlock.bind(this);
+		this.toggleControls = this.toggleControls.bind(this);
 	}
 
 	componentDidMount() {
@@ -56,27 +59,45 @@ class Block extends React.Component {
 		});
 	}
 
+	toggleControls() {
+		this.setState({ controls: !this.state.controls });
+	}
+
 	render() {
 		let save;
 
-		if (this.props.save) {
+		if (this.props.save && this.state.controls) {
 			save = (
-				<div className="block-button" onClick={this.saveBlock}>
-					Save
+				<div className="block-controls">
+					<div className="block-button" onClick={this.saveBlock}>
+						Save
+					</div>
+					<div
+						className="block-button"
+						onClick={() => this.setState({ tagEditor: true })}
+					>
+						Add Tag
+					</div>
 				</div>
 			);
 		}
+		console.log(this.state.tagEditor);
 		return (
 			<div className="block-wrapper">
 				<div className="block">{this.state.content}</div>
-				<div className="block-controls">
-					{save}
-					<TagEditor
-						tags={this.state.tags}
-						onAdd={this.addTagToBlock}
-						onRemove={this.removeTagFromBlock}
-					/>
+				<div
+					className="block-toggle-controls"
+					onClick={this.toggleControls}
+				>
+					+ {save}
 				</div>
+
+				<TagEditor
+					visible={this.state.tagEditor}
+					tags={this.state.tags}
+					onAdd={this.addTagToBlock}
+					onRemove={this.removeTagFromBlock}
+				/>
 			</div>
 		);
 	}

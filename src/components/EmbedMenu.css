@@ -1,4 +1,8 @@
 .embed-menu-wrapper {
-	padding: 5px;
-	margin: 5px;
+	/*	padding: 5px;
+	margin: 5px;*/
+}
+
+.embed-menu-title {
+	margin-left: 5px;
 }

@@ -19,24 +19,39 @@ class Block extends React.Component {
 			tags: [],
 			controls: false,
 			tagEditor: false,
+			transcluded: this.props.transcluded,
 		};
 
 		this.saveBlock = this.saveBlock.bind(this);
 		this.addTagToBlock = this.addTagToBlock.bind(this);
 		this.removeTagFromBlock = this.removeTagFromBlock.bind(this);
 		this.toggleControls = this.toggleControls.bind(this);
+		this.getBlockContent = this.getBlockContent.bind(this);
 	}
 
 	componentDidMount() {
-		getBlock(this.state.id, (data) => {
-			this.setState({ content: data.body, tags: data.tags });
-		});
+		this.getBlockContent();
+	}
 
-		// unsure if it's a good idea to have this listener in each of the block
-		// components, but it works for now
-		listenForUpdatedBlocks((data) => {
-			if (data._id === this.state.id) {
-				this.setState({ tags: data.tags, content: data.body });
+	getBlockContent() {
+		getBlock(this.state.id, (data) => {
+			if (data.body.includes("transclude<")) {
+				const id = data.body.substring(
+					data.body.lastIndexOf("<") + 1,
+					data.body.lastIndexOf(">")
+				);
+				this.setState({ id: id, transcluded: true }, () => {
+					this.getBlockContent();
+				});
+			} else {
+				this.setState({ content: data.body, tags: data.tags });
+				// unsure if it's a good idea to have this listener in each of the block
+				// components, but it works for now
+				listenForUpdatedBlocks((data) => {
+					if (data._id === this.state.id) {
+						this.setState({ tags: data.tags, content: data.body });
+					}
+				});
 			}
 		});
 	}
@@ -64,34 +79,47 @@ class Block extends React.Component {
 	}
 
 	render() {
-		let save;
+		let dropdown;
+		let controls;
 
-		if (this.props.save && this.state.controls) {
-			save = (
-				<div className="block-controls">
-					<div className="block-button" onClick={this.saveBlock}>
-						Save
+		if (!this.props.uneditable) {
+			if (this.state.controls) {
+				controls = (
+					<div className="block-controls">
+						<div className="block-button" onClick={this.saveBlock}>
+							Save
+						</div>
+						<div
+							className="block-button"
+							onClick={() => this.setState({ tagEditor: true })}
+						>
+							Add Tag
+						</div>
 					</div>
-					<div
-						className="block-button"
-						onClick={() => this.setState({ tagEditor: true })}
-					>
-						Add Tag
-					</div>
-				</div>
-			);
-		}
-		console.log(this.state.tagEditor);
-		return (
-			<div className="block-wrapper">
-				<div className="block">{this.state.content}</div>
+				);
+			}
+
+			dropdown = (
 				<div
 					className="block-toggle-controls"
 					onClick={this.toggleControls}
 				>
-					+ {save}
+					+ {controls}
 				</div>
-
+			);
+		}
+		return (
+			<div className="block-wrapper">
+				<div
+					className={`block ${
+						this.state.transcluded ? "block-transcluded" : ""
+					}`}
+					style={this.props.style ? this.props.style : {}}
+					onClick={() => this.props.onClick(this.state.content)}
+				>
+					{this.state.content}
+				</div>
+				{dropdown}
 				<TagEditor
 					visible={this.state.tagEditor}
 					tags={this.state.tags}

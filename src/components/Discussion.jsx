@@ -1,4 +1,6 @@
 import React from "react";
+import moment from "moment";
+
 import Post from "./Post";
 import Block from "./Block";
 import PostEditor from "./PostEditor";
@@ -80,7 +82,14 @@ class Discussion extends React.Component {
             const blocks = post.blocks.map((block) => {
                 return <Block key={block} id={block} save />;
             });
-            return <Post key={post._id}>{blocks}</Post>;
+
+            const date = moment(post.created_at);
+            const formattedDate = date.format("M/D/YY, h:mm A");
+            return (
+                <Post key={post._id} title={formattedDate} author={post.author}>
+                    {blocks}
+                </Post>
+            );
         });
         return (
             <div className="discussion-wrapper">

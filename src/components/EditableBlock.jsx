@@ -15,6 +15,7 @@ class EditableBlock extends React.Component {
 		this.handleKeypress = this.handleKeypress.bind(this);
 		this.checkFocus = this.checkFocus.bind(this);
 		this.checkHeight = this.checkHeight.bind(this);
+		this.addTransclusion = this.addTransclusion.bind(this);
 	}
 
 	checkFocus() {
@@ -42,6 +43,11 @@ class EditableBlock extends React.Component {
 
 	handleChange(e) {
 		this.props.onEdit(e.target.value);
+	}
+
+	addTransclusion(content, id) {
+		this.setState({ menu: false });
+		this.props.onNewline(`transclude<${id}> (${content})`, "");
 	}
 
 	handleKeypress(e) {
@@ -94,7 +100,13 @@ class EditableBlock extends React.Component {
 		);
 
 		if (this.state.menu) {
-			menu = <EmbedMenu query={query} />;
+			menu = (
+				<EmbedMenu
+					onClick={this.addTransclusion}
+					onChange={this.props.onChange}
+					query={query}
+				/>
+			);
 		}
 
 		return (

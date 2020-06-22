@@ -32,3 +32,8 @@
     height: var(--d-header-height);
     margin: 0;
 }
+
+button {
+    cursor: pointer;
+    border: 1px solid #c9dbfc;
+}

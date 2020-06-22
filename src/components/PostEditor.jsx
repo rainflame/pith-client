@@ -25,10 +25,29 @@ class PostEditor extends React.Component {
     }
 
     handleSubmit(e) {
-        createPost(this.state.blocks, (data) => {
-            console.log("Added post!");
-            this.props.onClose();
+        // remove blanks
+        let cleaned = this.state.blocks.filter((word) => {
+            return word.length > 0;
         });
+
+        // clean transclusion text
+        cleaned = cleaned.map((word) => {
+            if (word.includes("transclude<")) {
+                const id = word.substring(
+                    word.lastIndexOf("<") + 1,
+                    word.lastIndexOf(">")
+                );
+                return `transclude<${id}>`;
+            }
+            return word;
+        });
+
+        if (cleaned.length > 0) {
+            createPost(cleaned, (data) => {
+                console.log("Added post!");
+                this.props.onClose();
+            });
+        }
     }
 
     updateBlock(index, value) {
@@ -65,6 +84,7 @@ class PostEditor extends React.Component {
                 editable
                 focus={this.state.focusIndex === index}
                 onEdit={(value) => this.updateBlock(index, value)}
+                onChange={this.props.onChange}
                 onNewline={(oldContent, newContent) =>
                     this.addBlock(index, oldContent, newContent)
                 }
@@ -74,7 +94,9 @@ class PostEditor extends React.Component {
 
         return (
             <div className="post-editor">
-                <Post style={{ backgroundColor: "#8aa7fc" }}>{blocks}</Post>
+                <Post style={{ backgroundColor: "#8aa7fc" }} title="New Post">
+                    {blocks}
+                </Post>
                 <button onClick={this.handleSubmit}>Add post</button>
                 <button onClick={this.props.onClose}>Cancel</button>
             </div>

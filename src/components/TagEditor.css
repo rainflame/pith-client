@@ -14,9 +14,9 @@
 	font-size: 14px;
 	display: inline-block;
 	max-width: 100px;
-	border-left: 1px solid grey;
-	border-right: 1px solid grey;
-	border-bottom: 1px solid grey;
+	border-left: 1px solid #c9dbfc;
+	border-right: 1px solid #c9dbfc;
+	border-bottom: 1px solid #c9dbfc;
 }
 
 .tag {
@@ -26,9 +26,9 @@
 	margin-right: -1px;
 	display: inline-block;
 	padding: 5px;
-	border-left: 1px solid grey;
-	border-right: 1px solid grey;
-	border-bottom: 1px solid grey;
+	border-left: 1px solid #c9dbfc;
+	border-right: 1px solid #c9dbfc;
+	border-bottom: 1px solid #c9dbfc;
 }
 
 .tag-close {

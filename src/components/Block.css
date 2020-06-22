@@ -8,16 +8,16 @@
 
 .block-wrapper .block .block-controls {
 	margin: 0;
-	width: calc(100% - 10px);
+	width: calc(var(--column-width) - var(--column-padding));
 	margin: 5px;
 }
 
 .block-wrapper {
-	margin: 10px 5px;
+	margin: 5px 5px;
 }
 
 .block {
-	border: 1px solid grey;
+	border: 1px solid #c9dbfc;
 	font-family: sans-serif;
 	font-size: 100%;
 	resize: none;
@@ -25,10 +25,18 @@
 	background-color: white;
 }
 
+.block-transcluded {
+	background-color: #c9dbfc;
+	font-style: italic;
+}
+
 .block-toggle-controls {
 	display: inline-block;
 	width: 40px;
-	margin-top: -40px;
+	position: relative;
+	top: -25px;
+	float: right;
+	cursor: pointer;
 }
 
 .block-controls > div {
@@ -39,20 +47,22 @@
 .block-controls {
 	overflow: auto;
 	padding-top: 5px;
-	margin-top: -5px;
+	/*margin-top: -5px;*/
+	position: absolute;
+	z-index: 200;
 }
 
 .block-button {
 	display: inline-block;
 	padding: 5px;
-	border-left: 1px solid grey;
-	border-right: 1px solid grey;
-	border-bottom: 1px solid grey;
+	border-left: 1px solid #c9dbfc;
+	border-right: 1px solid #c9dbfc;
+	border-bottom: 1px solid #c9dbfc;
 	background-color: white;
 }
 
 textarea {
 	width: calc(100% - 20px);
 	margin: 10px 5px;
-	background-color: #e0e0e0e0;
+	background-color: white;
 }

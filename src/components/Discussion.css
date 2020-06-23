@@ -6,6 +6,7 @@
 .discussion-wrapper {
     max-width: var(--column-width);
     height: calc(100vh - var(--column-padding) * 2);
+    max-height: 1350px;
     width: 100%;
     padding: var(--column-padding);
     position: relative;

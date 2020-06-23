@@ -5,7 +5,7 @@ const socket = openSocket("http://localhost:5000");
 
 // the number of ms we wait before checking if we've received a respnse from the
 // last request and can proceed to make a new one
-const TICK = 25;
+const TICK = 20;
 
 // amount of time to wait before deciding there was an issue
 const TIMEOUT = 5000;
@@ -57,7 +57,6 @@ function nextEvent() {
 		connectAndCreateUser();
 	} else if (!waitingForCreateUser) {
 		if (queue.length > 0) {
-			console.log("Next event");
 			// take the last job off the queue
 			const job = queue.pop();
 			// if we're going to be waiting for a reply from the server, start the counter

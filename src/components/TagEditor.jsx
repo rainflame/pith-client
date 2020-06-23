@@ -13,11 +13,20 @@ class TagEditor extends React.Component {
 
 		this.handleKeypress = this.handleKeypress.bind(this);
 		this.handleChange = this.handleChange.bind(this);
+		this.checkFocus = this.checkFocus.bind(this);
+	}
+
+	checkFocus() {
+		if (this.inputRef) {
+			this.inputRef.focus();
+		}
 	}
 
 	componentDidUpdate() {
 		if (this.props.visible && !this.state.visible) {
-			this.setState({ visible: true, editing: true });
+			this.setState({ visible: true, editing: true }, () => {
+				this.checkFocus();
+			});
 		}
 	}
 
@@ -43,6 +52,9 @@ class TagEditor extends React.Component {
 		if (this.state.editing) {
 			editor = (
 				<input
+					ref={(input) => {
+						this.inputRef = input;
+					}}
 					className="tag-input"
 					type="text"
 					placeholder="New tag"
@@ -54,8 +66,12 @@ class TagEditor extends React.Component {
 		} else {
 			editor = (
 				<div
-					className="block-button"
-					onClick={() => this.setState({ editing: true })}
+					className="tag-button"
+					onClick={() => {
+						this.setState({ editing: true }, () =>
+							this.checkFocus()
+						);
+					}}
 				>
 					+
 				</div>
@@ -70,7 +86,7 @@ class TagEditor extends React.Component {
 						className="tag-close"
 						onClick={() => this.props.onRemove(tag)}
 					>
-						x
+						×
 					</div>
 				</div>
 			);

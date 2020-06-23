@@ -31,6 +31,7 @@
 }
 
 .block-toggle-controls {
+	text-align: right;
 	display: inline-block;
 	width: 40px;
 	position: relative;
@@ -53,16 +54,24 @@
 }
 
 .block-button {
+	cursor: pointer;
 	display: inline-block;
 	padding: 5px;
+	/*margin: 5px 0px;*/
 	border-left: 1px solid #c9dbfc;
 	border-right: 1px solid #c9dbfc;
 	border-bottom: 1px solid #c9dbfc;
 	background-color: white;
 }
 
+.toggle-icon {
+	color: #c9dbfc;
+	font-size: 10px;
+	padding-right: 10px;
+}
+
 textarea {
 	width: calc(100% - 20px);
-	margin: 10px 5px;
+	margin: 5px 5px;
 	background-color: white;
 }

@@ -14,6 +14,7 @@ class Block extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			ogId: this.props.id,
 			id: this.props.id,
 			content: "Loading...",
 			tags: [],
@@ -33,25 +34,43 @@ class Block extends React.Component {
 		this.getBlockContent();
 	}
 
+	componentDidUpdate() {
+		if (this.props.id !== this.state.ogId) {
+			this.setState({ ogId: this.props.id, id: this.props.id }, () => {
+				this.getBlockContent();
+			});
+		}
+	}
+
 	getBlockContent() {
 		getBlock(this.state.id, (data) => {
-			if (data.body.includes("transclude<")) {
-				const id = data.body.substring(
-					data.body.lastIndexOf("<") + 1,
-					data.body.lastIndexOf(">")
-				);
-				this.setState({ id: id, transcluded: true }, () => {
-					this.getBlockContent();
-				});
+			if (data !== null) {
+				if (data.body.includes("transclude<")) {
+					const id = data.body.substring(
+						data.body.lastIndexOf("<") + 1,
+						data.body.lastIndexOf(">")
+					);
+					this.setState({ id: id, transcluded: true }, () => {
+						this.getBlockContent(id);
+					});
+				} else {
+					this.setState({
+						content: data.body,
+						tags: data.tags,
+					});
+					// unsure if it's a good idea to have this listener in each of the block
+					// components, but it works for now
+					listenForUpdatedBlocks((data) => {
+						if (data._id === this.state.id) {
+							this.setState({
+								tags: data.tags,
+								content: data.body,
+							});
+						}
+					});
+				}
 			} else {
-				this.setState({ content: data.body, tags: data.tags });
-				// unsure if it's a good idea to have this listener in each of the block
-				// components, but it works for now
-				listenForUpdatedBlocks((data) => {
-					if (data._id === this.state.id) {
-						this.setState({ tags: data.tags, content: data.body });
-					}
-				});
+				this.setState({ content: "Error loading block" });
 			}
 		});
 	}
@@ -104,7 +123,7 @@ class Block extends React.Component {
 					className="block-toggle-controls"
 					onClick={this.toggleControls}
 				>
-					+ {controls}
+					<span className="toggle-icon">▼</span> {controls}
 				</div>
 			);
 		}
@@ -115,7 +134,11 @@ class Block extends React.Component {
 						this.state.transcluded ? "block-transcluded" : ""
 					}`}
 					style={this.props.style ? this.props.style : {}}
-					onClick={() => this.props.onClick(this.state.content)}
+					onClick={() =>
+						this.props.onClick
+							? this.props.onClick(this.state.content)
+							: {}
+					}
 				>
 					{this.state.content}
 				</div>

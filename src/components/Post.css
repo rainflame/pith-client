@@ -1,8 +1,14 @@
 .post {
 	padding: 10px;
 	margin: 10px 0;
-	background-color: #e0eafc;
+	background-color: #eff4fc;
+	border: 1px solid #c9dbfc;
 	width: 100%;
+}
+
+.post-height-limited {
+	max-height: 75vh;
+	overflow: auto;
 }
 
 .post-title {

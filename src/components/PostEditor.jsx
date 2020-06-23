@@ -80,6 +80,7 @@ class PostEditor extends React.Component {
     render() {
         const blocks = this.state.blocks.map((block, index) => (
             <EditableBlock
+                key={index}
                 content={block}
                 editable
                 focus={this.state.focusIndex === index}
@@ -94,7 +95,11 @@ class PostEditor extends React.Component {
 
         return (
             <div className="post-editor">
-                <Post style={{ backgroundColor: "#8aa7fc" }} title="New Post">
+                <Post
+                    style={{ backgroundColor: "#8aa7fc" }}
+                    title="New Post"
+                    heightLimited={true}
+                >
                     {blocks}
                 </Post>
                 <button onClick={this.handleSubmit}>Add post</button>

@@ -19,3 +19,9 @@ button {
 	padding: 10px;
 	background-color: white;
 }
+
+textarea:focus,
+input:focus,
+button:focus {
+	outline: none;
+}

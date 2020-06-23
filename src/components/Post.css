@@ -1,8 +1,8 @@
 .post {
-	padding: 10px;
-	margin: 10px 0;
-	background-color: #eff4fc;
-	border: 1px solid #c9dbfc;
+	padding: 5px;
+	/*margin: 10px 0;*/
+	/*background-color: #eff4fc;*/
+	/*border: 1px solid #c9dbfc;*/
 	width: 100%;
 }
 
@@ -14,4 +14,5 @@
 .post-title {
 	margin-top: 0px;
 	margin-left: 10px;
+	margin-bottom: 15px;
 }

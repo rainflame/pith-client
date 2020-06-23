@@ -18,6 +18,10 @@ const saveBlock = (data, func) => {
 	setter("save_block", { block_id: data }, true, func);
 };
 
+const unsaveBlock = (data, func) => {
+	setter("unsave_block", { block_id: data }, true, func);
+};
+
 const addTagToBlock = (data, func) => {
 	setter("block_add_tag", { block_id: data.id, tag: data.tag }, false, func);
 };
@@ -36,7 +40,7 @@ const getSavedBlocks = (func) => {
 };
 
 const getBlock = (data, func) => {
-	getter("get_block", { block_id: data }, false, func);
+	getter("get_block", { block_id: data }, true, func);
 };
 
 const listenForSavedBlocks = (func) => {
@@ -52,16 +56,22 @@ const makeSearch = (data, func) => {
 	getter("search_all", { query: data }, true, func);
 };
 
+const makeUserSearch = (data, func) => {
+	getter("search_user_saved", { query: data }, true, func);
+};
+
 export {
 	createPost,
 	getPosts,
 	getBlock,
 	saveBlock,
+	unsaveBlock,
 	listenForCreatedPosts,
 	listenForSavedBlocks,
 	listenForUpdatedBlocks,
 	getSavedBlocks,
 	removeTagFromBlock,
 	makeSearch,
+	makeUserSearch,
 	addTagToBlock,
 };

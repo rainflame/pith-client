@@ -96,7 +96,7 @@ class PostEditor extends React.Component {
         return (
             <div className="post-editor">
                 <Post
-                    style={{ backgroundColor: "#8aa7fc" }}
+                    style={{ backgroundColor: "white" }}
                     title="New Post"
                     heightLimited={true}
                 >

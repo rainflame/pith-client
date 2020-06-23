@@ -3,6 +3,7 @@ import TagEditor from "./TagEditor";
 import {
 	getBlock,
 	saveBlock,
+	unsaveBlock,
 	addTagToBlock,
 	removeTagFromBlock,
 	listenForUpdatedBlocks,
@@ -16,14 +17,14 @@ class Block extends React.Component {
 		this.state = {
 			ogId: this.props.id,
 			id: this.props.id,
-			content: "Loading...",
+			content: "",
 			tags: [],
 			controls: false,
 			tagEditor: false,
 			transcluded: this.props.transcluded,
 		};
 
-		this.saveBlock = this.saveBlock.bind(this);
+		this.updateSaveBlock = this.updateSaveBlock.bind(this);
 		this.addTagToBlock = this.addTagToBlock.bind(this);
 		this.removeTagFromBlock = this.removeTagFromBlock.bind(this);
 		this.toggleControls = this.toggleControls.bind(this);
@@ -57,6 +58,7 @@ class Block extends React.Component {
 					this.setState({
 						content: data.body,
 						tags: data.tags,
+						saved: data.saved,
 					});
 					// unsure if it's a good idea to have this listener in each of the block
 					// components, but it works for now
@@ -65,6 +67,7 @@ class Block extends React.Component {
 							this.setState({
 								tags: data.tags,
 								content: data.body,
+								saved: data.saved,
 							});
 						}
 					});
@@ -75,10 +78,16 @@ class Block extends React.Component {
 		});
 	}
 
-	saveBlock(e) {
-		saveBlock(this.state.id, (data) => {
-			console.log("Block saved!");
-		});
+	updateSaveBlock(e) {
+		if (this.state.saved) {
+			unsaveBlock(this.state.id, (data) => {
+				console.log("Block unsaved!");
+			});
+		} else {
+			saveBlock(this.state.id, (data) => {
+				console.log("Block saved!");
+			});
+		}
 	}
 
 	addTagToBlock(tag) {
@@ -105,8 +114,11 @@ class Block extends React.Component {
 			if (this.state.controls) {
 				controls = (
 					<div className="block-controls">
-						<div className="block-button" onClick={this.saveBlock}>
-							Save
+						<div
+							className="block-button"
+							onClick={this.updateSaveBlock}
+						>
+							{this.state.saved ? "Unsave" : "Save"}
 						</div>
 						<div
 							className="block-button"
@@ -127,12 +139,13 @@ class Block extends React.Component {
 				</div>
 			);
 		}
+
 		return (
 			<div className="block-wrapper">
 				<div
 					className={`block ${
 						this.state.transcluded ? "block-transcluded" : ""
-					}`}
+					} ${this.state.saved ? "block-saved" : ""}`}
 					style={this.props.style ? this.props.style : {}}
 					onClick={() =>
 						this.props.onClick
@@ -140,7 +153,16 @@ class Block extends React.Component {
 							: {}
 					}
 				>
-					{this.state.content}
+					{this.state.content !== "" ? (
+						this.state.content
+					) : (
+						<div className="loader" />
+					)}
+					{this.props.showSaved && this.state.saved ? (
+						<span className="block-saved-label">Saved Block</span>
+					) : (
+						<span />
+					)}
 				</div>
 				{dropdown}
 				<TagEditor

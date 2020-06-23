@@ -2,7 +2,7 @@ import React from "react";
 
 import Block from "./Block";
 
-import { makeSearch } from "../api/api";
+import { makeSearch, makeUserSearch } from "../api/api";
 
 import "./EmbedMenu.css";
 
@@ -13,6 +13,7 @@ class EmbedMenu extends React.Component {
 		this.state = {
 			sentQuery: "",
 			recs: [],
+			userRecs: [],
 		};
 	}
 
@@ -29,6 +30,14 @@ class EmbedMenu extends React.Component {
 					sentQuery: this.props.query,
 				});
 			});
+
+			// no need to do this since each block knows if it's saved
+			// makeUserSearch(this.props.query, (data) => {
+			// 	this.setState({
+			// 		userRecs: data.blocks,
+			// 		sentQuery: this.props.query,
+			// 	});
+			// });
 		}
 	}
 
@@ -37,6 +46,7 @@ class EmbedMenu extends React.Component {
 			return (
 				<Block
 					id={id}
+					showSaved
 					style={{ cursor: "pointer" }}
 					transcluded={true}
 					uneditable={true}
@@ -47,7 +57,11 @@ class EmbedMenu extends React.Component {
 		return (
 			<div className="embed-menu-wrapper">
 				<div className="embed-menu-title">Block Search</div>
-				{clickBlocks}
+				{clickBlocks.length > 0 ? (
+					clickBlocks
+				) : (
+					<div className="removed-loader" />
+				)}
 			</div>
 		);
 	}

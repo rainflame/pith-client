@@ -53,7 +53,7 @@ function nextEvent() {
 
 	if ((!socket.connected || user.id.length === 0) && !waitingForCreateUser) {
 		waitingForCreateUser = true;
-		console.log("Connecting to server");
+		//console.log("Connecting to server");
 		connectAndCreateUser();
 	} else if (!waitingForCreateUser) {
 		if (queue.length > 0) {
@@ -70,7 +70,7 @@ function nextEvent() {
 function addToQueue(func, id, listenEvent) {
 	// add to the end of the queue
 	queue.unshift({ func: func, id: id, listenEvent: listenEvent });
-	console.log(`Queued request ${id}`);
+	//console.log(`Queued request ${id}`);
 	// if we aren't waiting for anything, start it
 	if (elapsed === 0) nextEvent();
 }
@@ -81,14 +81,14 @@ function connectAndCreateUser() {
 	fetch(req)
 		.then((response) => response.text())
 		.then((text) => {
-			const ip = text.substr(text.indexOf("ip=") + 3, 37);
+			const ip = text.substr(text.indexOf("ip=") + 3, 13);
 
 			const payload = { user_id: btoa(ip) };
 			socket.emit("create_user", payload, (data) => {
 				// save the user id so we can use it later when creating posts etc
 				user.id = JSON.parse(data)._id;
 				waitingForCreateUser = false;
-				console.log("Server connected");
+				//console.log("Server connected");
 				// now we're connected and can make the next request
 				nextEvent();
 			});
@@ -99,7 +99,7 @@ const listener = (eventName, func) => {
 	const id = uuidv4();
 	addToQueue(
 		() => {
-			console.log(`Adding listener "${eventName}" (request ${id})`);
+			//console.log(`Adding listener "${eventName}" (request ${id})`);
 			socket.on(eventName, (data) => {
 				func(JSON.parse(data));
 			});
@@ -115,7 +115,7 @@ const setter = (eventName, payload, addAuth, func) => {
 	const id = uuidv4();
 	addToQueue(
 		() => {
-			console.log(`Starting "${eventName}" (request ${id})`);
+			// console.log(`Starting "${eventName}" (request ${id})`);
 			// if we have to add the user's id, do that now (assuming that we've connected)
 			if (addAuth) {
 				if (!payload) {
@@ -124,7 +124,7 @@ const setter = (eventName, payload, addAuth, func) => {
 				payload["user_id"] = user.id;
 			}
 			socket.emit(eventName, payload, (data) => {
-				console.log(`Completed "${eventName}" (request ${id})`);
+				//console.log(`Completed "${eventName}" (request ${id})`);
 				nextEvent();
 				func(JSON.parse(data));
 			});
@@ -141,9 +141,9 @@ const getter = (eventName, payload, addAuth, func) => {
 		const id = uuidv4();
 		addToQueue(
 			() => {
-				console.log(`Starting "${eventName}" (request ${id})`);
+				//console.log(`Starting "${eventName}" (request ${id})`);
 				socket.emit(eventName, (data) => {
-					console.log(`Completed "${eventName}" (request ${id})`);
+					//console.log(`Completed "${eventName}" (request ${id})`);
 					nextEvent();
 					func(JSON.parse(data));
 				});

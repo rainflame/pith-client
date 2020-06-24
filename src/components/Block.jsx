@@ -55,6 +55,7 @@ class Block extends React.Component {
 						this.getBlockContent(id);
 					});
 				} else {
+					console.log(data);
 					this.setState({
 						content: data.body,
 						tags: data.tags,
@@ -91,9 +92,13 @@ class Block extends React.Component {
 	}
 
 	addTagToBlock(tag) {
-		addTagToBlock({ id: this.state.id, tag: tag }, (data) => {
-			console.log("Added tag!");
-		});
+		const cleanedTag = tag.trim();
+		if (cleanedTag !== "" && !this.state.tags.includes(cleanedTag)) {
+			addTagToBlock({ id: this.state.id, tag: cleanedTag }, (data) => {
+				console.log("Added tag!");
+			});
+		}
+		this.setState({ tagEditor: false });
 	}
 
 	removeTagFromBlock(tag) {

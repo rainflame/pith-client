@@ -47,6 +47,7 @@ class EmbedMenu extends React.Component {
 				<Block
 					id={id}
 					showSaved
+					key={id}
 					style={{ cursor: "pointer" }}
 					transcluded={true}
 					uneditable={true}

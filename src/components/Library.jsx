@@ -2,7 +2,7 @@ import React from "react";
 
 import Block from "./Block";
 
-import { listenForSavedBlocks, getSavedBlocks } from "../api/api";
+import { listenForUpdatedBlocks, getSavedBlocks } from "../api/api";
 
 import "./Library.css";
 
@@ -20,10 +20,18 @@ class Library extends React.Component {
 			this.setState({ blocks: data });
 		});
 
-		listenForSavedBlocks((data) => {
-			const blocks = this.state.blocks;
-			blocks.push(data._id);
-			this.setState({ blocks: blocks });
+		listenForUpdatedBlocks((data) => {
+			if (data.saved) {
+				const blocks = this.state.blocks;
+				if (!this.state.blocks.includes(data._id)) {
+					blocks.push(data._id);
+					this.setState({ blocks: blocks });
+				}
+			} else if (!data.saved && this.state.blocks.includes(data._id)) {
+				const blocks = this.state.blocks;
+				blocks.splice(blocks.indexOf(data._id), 1);
+				this.setState({ blocks: blocks });
+			}
 		});
 	}
 

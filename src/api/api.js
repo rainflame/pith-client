@@ -23,14 +23,14 @@ const unsaveBlock = (data, func) => {
 };
 
 const addTagToBlock = (data, func) => {
-	setter("block_add_tag", { block_id: data.id, tag: data.tag }, false, func);
+	setter("block_add_tag", { block_id: data.id, tag: data.tag }, true, func);
 };
 
 const removeTagFromBlock = (data, func) => {
 	setter(
 		"block_remove_tag",
 		{ block_id: data.id, tag: data.tag },
-		false,
+		true,
 		func
 	);
 };
@@ -41,10 +41,6 @@ const getSavedBlocks = (func) => {
 
 const getBlock = (data, func) => {
 	getter("get_block", { block_id: data }, true, func);
-};
-
-const listenForSavedBlocks = (func) => {
-	listener("block_saved", func);
 };
 
 const listenForUpdatedBlocks = (func) => {
@@ -67,7 +63,6 @@ export {
 	saveBlock,
 	unsaveBlock,
 	listenForCreatedPosts,
-	listenForSavedBlocks,
 	listenForUpdatedBlocks,
 	getSavedBlocks,
 	removeTagFromBlock,

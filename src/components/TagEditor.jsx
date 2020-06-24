@@ -33,7 +33,7 @@ class TagEditor extends React.Component {
 	handleKeypress(e) {
 		if (e.keyCode === 13) {
 			this.props.onAdd(this.state.value);
-			this.setState({ editing: false, value: "" });
+			this.setState({ editing: false, value: "", visible: false });
 			e.preventDefault();
 		} else if (e.keyCode === 8) {
 			if (this.state.value.length === 0) {
@@ -63,7 +63,7 @@ class TagEditor extends React.Component {
 					onChange={this.handleChange}
 				/>
 			);
-		} else {
+		} else if (this.props.tags.length > 0) {
 			editor = (
 				<div
 					className="tag-button"

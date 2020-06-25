@@ -2,7 +2,7 @@ import React from "react";
 
 import Block from "./Block";
 
-import { makeSearch, makeUserSearch } from "../api/api";
+import { makeSearch } from "../api/api";
 
 import "./EmbedMenu.css";
 

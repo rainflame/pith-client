@@ -1,7 +1,7 @@
 import openSocket from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 
-const socket = openSocket("http://localhost:5000");
+const socket = openSocket(process.env.REACT_APP_API);
 
 // the number of ms we wait before checking if we've received a respnse from the
 // last request and can proceed to make a new one

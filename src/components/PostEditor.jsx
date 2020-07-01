@@ -2,7 +2,7 @@ import React from "react";
 import EditableBlock from "./EditableBlock";
 import Post from "./Post";
 
-import { createPost } from "../api/api";
+import { createPost } from "../api/post";
 
 import "./PostEditor.css";
 
@@ -43,10 +43,13 @@ class PostEditor extends React.Component {
         });
 
         if (cleaned.length > 0) {
-            createPost(cleaned, (data) => {
-                console.log("Added post!");
-                this.props.onClose();
-            });
+            createPost(
+                { blocks: cleaned, discussionId: this.props.discussionId },
+                (data) => {
+                    console.log("Added post!");
+                    this.props.onClose();
+                }
+            );
         }
     }
 

@@ -5,7 +5,8 @@ import Post from "./Post";
 import Block from "./Block";
 import PostEditor from "./PostEditor";
 
-import { getPosts, listenForCreatedPosts } from "../api/api";
+import { getPosts, listenForCreatedPosts } from "../api/post";
+import { joinDiscussion } from "../api/discussion";
 
 import "./Discussion.css";
 
@@ -13,6 +14,7 @@ class Discussion extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            id: 42,
             editing: false,
             posts: [],
         };
@@ -21,14 +23,18 @@ class Discussion extends React.Component {
     }
 
     componentDidMount() {
-        getPosts((data) => {
-            this.setState({ posts: data });
-        });
+        joinDiscussion(this.state.id, (data) => {
+            console.log("joined discussion!");
 
-        listenForCreatedPosts((data) => {
-            const posts = this.state.posts;
-            posts.push(data);
-            this.setState({ posts: posts });
+            getPosts(this.sate.id, (data) => {
+                this.setState({ posts: data });
+            });
+
+            listenForCreatedPosts((data) => {
+                const posts = this.state.posts;
+                posts.push(data);
+                this.setState({ posts: posts });
+            });
         });
 
         this.adjustDiscussionSize();
@@ -72,6 +78,7 @@ class Discussion extends React.Component {
         if (this.state.editing) {
             editor = (
                 <PostEditor
+                    discussionId={this.state.id}
                     onClose={() => this.setState({ editing: false })}
                     onChange={this.adjustDiscussionSize}
                 />
@@ -80,7 +87,16 @@ class Discussion extends React.Component {
 
         const discussion = this.state.posts.map((post) => {
             const blocks = post.blocks.map((block) => {
-                return <Block key={block} id={block} save />;
+                return (
+                    <Block
+                        discussionId={this.state.id}
+                        key={block.id}
+                        id={block.id}
+                        content={block.content}
+                        tags={block.tags}
+                        save
+                    />
+                );
             });
 
             const date = moment(post.created_at);

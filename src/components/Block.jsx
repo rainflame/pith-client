@@ -6,8 +6,9 @@ import {
 	unsaveBlock,
 	addTagToBlock,
 	removeTagFromBlock,
-	listenForUpdatedBlocks,
-} from "../api/api";
+	listenForTaggedBlock,
+	listenForUntaggedBlock,
+} from "../api/block";
 
 import "./Block.css";
 
@@ -17,8 +18,8 @@ class Block extends React.Component {
 		this.state = {
 			ogId: this.props.id,
 			id: this.props.id,
-			content: "",
-			tags: [],
+			content: this.props.content ? this.props.content : "",
+			tags: this.props.tags ? this.props.tags : [],
 			controls: false,
 			tagEditor: false,
 			transcluded: this.props.transcluded,
@@ -55,7 +56,6 @@ class Block extends React.Component {
 						this.getBlockContent(id);
 					});
 				} else {
-					console.log(data);
 					this.setState({
 						content: data.body,
 						tags: data.tags,
@@ -63,15 +63,23 @@ class Block extends React.Component {
 					});
 					// unsure if it's a good idea to have this listener in each of the block
 					// components, but it works for now
-					listenForUpdatedBlocks((data) => {
-						if (data._id === this.state.id) {
-							this.setState({
-								tags: data.tags,
-								content: data.body,
-								saved: data.saved,
-							});
-						}
+
+					listenForTaggedBlock((data) => {
+						console.log(data);
 					});
+
+					listenForUntaggedBlock((data) => {
+						console.log(data);
+					});
+					// listenForUpdatedBlocks((data) => {
+					// 	if (data._id === this.state.id) {
+					// 		this.setState({
+					// 			tags: data.tags,
+					// 			content: data.body,
+					// 			saved: data.saved,
+					// 		});
+					// 	}
+					// });
 				}
 			} else {
 				this.setState({ content: "Error loading block" });

@@ -8,6 +8,8 @@ import {
 	removeTagFromBlock,
 	listenForTaggedBlock,
 	listenForUntaggedBlock,
+	listenForSavedBlock,
+	listenForUnsavedBlock,
 } from "../api/block";
 
 import "./Block.css";
@@ -45,74 +47,113 @@ class Block extends React.Component {
 	}
 
 	getBlockContent() {
-		getBlock(this.state.id, (data) => {
-			if (data !== null) {
-				if (data.body.includes("transclude<")) {
-					const id = data.body.substring(
-						data.body.lastIndexOf("<") + 1,
-						data.body.lastIndexOf(">")
-					);
-					this.setState({ id: id, transcluded: true }, () => {
-						this.getBlockContent(id);
-					});
+		getBlock(
+			{ blockId: this.state.id, discussionId: this.props.discussionId },
+			(data) => {
+				if (data !== null) {
+					if (data.body.includes("transclude<")) {
+						const id = data.body.substring(
+							data.body.lastIndexOf("<") + 1,
+							data.body.lastIndexOf(">")
+						);
+						this.setState({ id: id, transcluded: true }, () => {
+							this.getBlockContent(id);
+						});
+					} else {
+						console.log(data);
+						this.setState({
+							content: data.body,
+							tags: data.tags,
+							saved: this.props.savedBlocks.includes(data._id),
+						});
+						// unsure if it's a good idea to have this listener in each of the block
+						// components, but it works for now
+
+						listenForTaggedBlock((data) => {
+							if (data.block_id === this.state.id) {
+								const tags = this.state.tags;
+								tags[data.tag] = { owner: data.user_id };
+								this.setState({ tags: tags });
+							}
+						});
+
+						listenForUntaggedBlock((data) => {
+							if (data.block_id === this.state.id) {
+								const tags = this.state.tags;
+								delete tags[data.tag];
+								this.setState({ tags: tags });
+							}
+						});
+						listenForSavedBlock((data) => {
+							if (data.block_id === this.state.id) {
+								this.setState({ saved: true });
+							}
+						});
+						listenForUnsavedBlock((data) => {
+							if (data.block_id === this.state.id) {
+								this.setState({ saved: false });
+							}
+						});
+					}
 				} else {
-					this.setState({
-						content: data.body,
-						tags: data.tags,
-						saved: data.saved,
-					});
-					// unsure if it's a good idea to have this listener in each of the block
-					// components, but it works for now
-
-					listenForTaggedBlock((data) => {
-						console.log(data);
-					});
-
-					listenForUntaggedBlock((data) => {
-						console.log(data);
-					});
-					// listenForUpdatedBlocks((data) => {
-					// 	if (data._id === this.state.id) {
-					// 		this.setState({
-					// 			tags: data.tags,
-					// 			content: data.body,
-					// 			saved: data.saved,
-					// 		});
-					// 	}
-					// });
+					this.setState({ content: "Error loading block" });
 				}
-			} else {
-				this.setState({ content: "Error loading block" });
 			}
-		});
+		);
 	}
 
 	updateSaveBlock(e) {
 		if (this.state.saved) {
-			unsaveBlock(this.state.id, (data) => {
-				console.log("Block unsaved!");
-			});
+			unsaveBlock(
+				{
+					blockId: this.state.id,
+					discussionId: this.props.discussionId,
+				},
+				(data) => {
+					console.log("Block unsaved!");
+				}
+			);
 		} else {
-			saveBlock(this.state.id, (data) => {
-				console.log("Block saved!");
-			});
+			saveBlock(
+				{
+					blockId: this.state.id,
+					discussionId: this.props.discussionId,
+				},
+				(data) => {
+					console.log("Block saved!");
+				}
+			);
 		}
 	}
 
 	addTagToBlock(tag) {
 		const cleanedTag = tag.trim();
-		if (cleanedTag !== "" && !this.state.tags.includes(cleanedTag)) {
-			addTagToBlock({ id: this.state.id, tag: cleanedTag }, (data) => {
-				console.log("Added tag!");
-			});
+		if (cleanedTag !== "" && !(cleanedTag in this.state.tags)) {
+			addTagToBlock(
+				{
+					blockId: this.state.id,
+					tag: cleanedTag,
+					discussionId: this.props.discussionId,
+				},
+				(data) => {
+					console.log("Added tag!");
+				}
+			);
 		}
 		this.setState({ tagEditor: false });
 	}
 
 	removeTagFromBlock(tag) {
-		removeTagFromBlock({ id: this.state.id, tag: tag }, (data) => {
-			console.log("Removed tag!");
-		});
+		removeTagFromBlock(
+			{
+				blockId: this.state.id,
+				tag: tag,
+				discussionId: this.props.discussionId,
+			},
+			(data) => {
+				console.log("Removed tag!");
+			}
+		);
 	}
 
 	toggleControls() {

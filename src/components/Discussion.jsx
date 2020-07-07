@@ -1,11 +1,11 @@
 import React from "react";
-import moment from "moment";
 
 import Post from "./Post";
 import Block from "./Block";
 import PostEditor from "./PostEditor";
 
 import { getPosts, listenForCreatedPosts } from "../api/post";
+import { getSavedBlocks } from "../api/block";
 import { joinDiscussion } from "../api/discussion";
 
 import "./Discussion.css";
@@ -14,20 +14,27 @@ class Discussion extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: 42,
             editing: false,
             posts: [],
+            savedBlocks: [],
         };
 
         this.adjustDiscussionSize = this.adjustDiscussionSize.bind(this);
     }
 
     componentDidMount() {
-        joinDiscussion(this.state.id, (data) => {
+        const {
+            match: { params },
+        } = this.props;
+        joinDiscussion(params.discussionId, (data) => {
             console.log("joined discussion!");
 
-            getPosts(this.sate.id, (data) => {
-                this.setState({ posts: data });
+            getPosts(params.discussionId, (data) => {
+                this.setState({ posts: data, id: params.discussionId });
+            });
+
+            getSavedBlocks({ discussionId: params.discussionId }, (data) => {
+                this.setState({ savedBlocks: data });
             });
 
             listenForCreatedPosts((data) => {
@@ -90,19 +97,22 @@ class Discussion extends React.Component {
                 return (
                     <Block
                         discussionId={this.state.id}
-                        key={block.id}
-                        id={block.id}
-                        content={block.content}
-                        tags={block.tags}
+                        key={block}
+                        id={block}
+                        savedBlocks={this.state.savedBlocks}
+                        // content={block.content}
+                        // tags={block.tags}
                         save
                     />
                 );
             });
 
-            const date = moment(post.created_at);
-            const formattedDate = date.format("M/D/YY, h:mm A");
             return (
-                <Post key={post._id} title={formattedDate} author={post.author}>
+                <Post
+                    key={post._id}
+                    time={post.created_at}
+                    author={post.author}
+                >
                     {blocks}
                 </Post>
             );

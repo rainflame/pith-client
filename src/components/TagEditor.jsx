@@ -1,5 +1,6 @@
 import React from "react";
 
+import { getUserId } from "../api/apiConnection";
 import "./TagEditor.css";
 
 class TagEditor extends React.Component {
@@ -48,7 +49,6 @@ class TagEditor extends React.Component {
 
 	render() {
 		let editor;
-
 		if (this.state.editing) {
 			editor = (
 				<input
@@ -63,7 +63,7 @@ class TagEditor extends React.Component {
 					onChange={this.handleChange}
 				/>
 			);
-		} else if (this.props.tags.length > 0) {
+		} else if (Object.keys(this.props.tags).length > 0) {
 			editor = (
 				<div
 					className="tag-button"
@@ -77,20 +77,25 @@ class TagEditor extends React.Component {
 				</div>
 			);
 		}
-
-		const tags = this.props.tags.map((tag) => {
-			return (
+		const tags = [];
+		for (const tag in this.props.tags) {
+			const newElt = (
 				<div className="tag" key={tag}>
 					{tag}
-					<div
-						className="tag-close"
-						onClick={() => this.props.onRemove(tag)}
-					>
-						×
-					</div>
+					{this.props.tags[tag].owner === getUserId() ? (
+						<div
+							className="tag-close"
+							onClick={() => this.props.onRemove(tag)}
+						>
+							×
+						</div>
+					) : (
+						<div></div>
+					)}
 				</div>
 			);
-		});
+			tags.push(newElt);
+		}
 
 		if (!this.props.visible && tags.length === 0) {
 			return <div></div>;

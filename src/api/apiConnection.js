@@ -26,6 +26,10 @@ let user = {
 	id: "",
 };
 
+function getUserId() {
+	return user.id;
+}
+
 function endCounter() {
 	clearTimeout(counterTimeout);
 	elapsed = 0;
@@ -154,4 +158,4 @@ const getter = (eventName, payload, addAuth, func) => {
 	}
 };
 
-export { listener, getter, setter, user };
+export { listener, getter, setter, getUserId };

@@ -15,7 +15,7 @@ const getPosts = (data, func) => {
 };
 
 const listenForCreatedPosts = (func) => {
-	listener("post_created", func);
+	listener("created_post", func);
 };
 
 export { createPost, getPosts, listenForCreatedPosts };

@@ -34,6 +34,14 @@
     margin: 0;
 }
 
+.discussion-zoom {
+    cursor: pointer;
+    padding: 10px;
+    position: absolute;
+    right: 20px;
+    background-color: #c9dbfc;
+}
+
 button {
     cursor: pointer;
     border: 1px solid #c9dbfc;

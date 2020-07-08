@@ -60,7 +60,6 @@ class Block extends React.Component {
 							this.getBlockContent(id);
 						});
 					} else {
-						console.log(data);
 						this.setState({
 							content: data.body,
 							tags: data.tags,
@@ -157,6 +156,15 @@ class Block extends React.Component {
 	}
 
 	toggleControls() {
+		if (!this.state.controls) {
+			const closeControls = () => {
+				this.setState({ controls: false });
+				document.removeEventListener("click", closeControls);
+			};
+			// add an event listener to close the dropdown the next time
+			// the user clicks anywhere
+			document.addEventListener("click", closeControls);
+		}
 		this.setState({ controls: !this.state.controls });
 	}
 

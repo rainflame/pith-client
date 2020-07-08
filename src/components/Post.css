@@ -12,7 +12,14 @@
 }
 
 .post-title {
+	display: inline-block;
 	margin-top: 0px;
 	margin-left: 10px;
+	margin-right: 10px;
 	margin-bottom: 15px;
+}
+
+.post-subtitle {
+	display: inline-block;
+	font-weight: normal;
 }

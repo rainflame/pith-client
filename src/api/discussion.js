@@ -14,7 +14,16 @@ const createDiscussion = (func) => {
 };
 
 const joinDiscussion = (data, func) => {
-	setter("join_discussion", { discussion_id: data }, true, func);
+	setter(
+		"join_discussion",
+		{ discussion_id: data.discussionId, name: data.name },
+		true,
+		func
+	);
+};
+
+const getDiscussionNames = (data, func) => {
+	getter("get_discussion_names", { discussion_id: data }, false, func);
 };
 
 const leaveDiscussion = (data, func) => {
@@ -25,6 +34,7 @@ export {
 	getDiscussions,
 	joinDiscussion,
 	leaveDiscussion,
+	getDiscussionNames,
 	createDiscussion,
 	listenForNewDiscussion,
 };

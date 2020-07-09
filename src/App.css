@@ -1,11 +1,15 @@
+@import url("https://use.typekit.net/hsu5vxo.css");
+
 :root {
 	--column-padding: 10px;
 	--column-width: 750px;
 }
 
 body {
-	font-size: 14px;
-	background-color: #f4f7fc;
+	font-family: freight-text-pro, serif;
+	color: #dcdcdc;
+	font-size: 1rem;
+	background-color: #222222;
 }
 
 .wrapper {
@@ -14,11 +18,22 @@ body {
 	flex-wrap: wrap;
 }
 
+input,
+textarea {
+	border: none;
+	font-family: freight-text-pro, serif;
+	color: #dcdcdc;
+	font-size: 1rem;
+}
+
 button {
+	font-family: freight-sans-pro, sans-serif;
+	cursor: pointer;
 	margin-right: 10px;
-	border: 0;
+	border: none;
 	padding: 10px;
-	background-color: white;
+	color: #dcdcdc;
+	background-color: #313131;
 }
 
 textarea:focus,

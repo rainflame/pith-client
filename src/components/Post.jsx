@@ -1,7 +1,7 @@
 import React from "react";
 import moment from "moment";
 
-import "./Post.css";
+import "./style/Post.css";
 
 function Post(props) {
 	const date = moment(props.time);

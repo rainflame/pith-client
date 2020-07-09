@@ -15,24 +15,19 @@
 	font-size: 14px;
 	display: inline-block;
 	max-width: 100px;
-	background-color: #c9dbfc;
-	border-left: 1px solid #c9dbfc;
-	border-right: 1px solid #c9dbfc;
-	border-bottom: 1px solid #c9dbfc;
+	background-color: #313131;
 }
 
 .tag {
 	/*to account for the overlapping borders*/
-	background-color: #c9dbfc;
+	background-color: #313131;
 	cursor: default;
 	/*margin-right: -1px;*/
 	display: inline-block;
 	padding: 2px;
+	padding-left: 5px;
 	margin-top: 5px;
 	margin-right: 5px;
-	border-left: 1px solid #c9dbfc;
-	border-right: 1px solid #c9dbfc;
-	border-bottom: 1px solid #c9dbfc;
 }
 
 .tag-button {

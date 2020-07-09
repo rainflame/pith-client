@@ -1,7 +1,7 @@
 import React from "react";
 
 import { getUserId } from "../api/apiConnection";
-import "./TagEditor.css";
+import "./style/TagEditor.css";
 
 class TagEditor extends React.Component {
 	constructor(props) {

@@ -12,7 +12,7 @@ import {
 	listenForUnsavedBlock,
 } from "../api/block";
 
-import "./Block.css";
+import "./style/Block.css";
 
 class Block extends React.Component {
 	constructor(props) {
@@ -176,6 +176,14 @@ class Block extends React.Component {
 			if (this.state.controls) {
 				controls = (
 					<div className="block-controls">
+						<div
+							className="block-button"
+							onClick={() =>
+								this.props.onReply(this.state.content)
+							}
+						>
+							Reply
+						</div>
 						<div
 							className="block-button"
 							onClick={this.updateSaveBlock}

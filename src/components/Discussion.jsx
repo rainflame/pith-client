@@ -9,7 +9,7 @@ import { getPosts, listenForCreatedPosts } from "../api/post";
 import { getSavedBlocks } from "../api/block";
 import { joinDiscussion, getDiscussionNames } from "../api/discussion";
 
-import "./Discussion.css";
+import "./style/Discussion.css";
 
 class Discussion extends React.Component {
     constructor(props) {
@@ -26,6 +26,7 @@ class Discussion extends React.Component {
         this.adjustDiscussionSize = this.adjustDiscussionSize.bind(this);
         this.recordScrollPercent = this.recordScrollPercent.bind(this);
         this.joinDiscussion = this.joinDiscussion.bind(this);
+        this.createReply = this.createReply.bind(this);
     }
 
     componentDidMount() {
@@ -109,12 +110,20 @@ class Discussion extends React.Component {
         }
     }
 
+    createReply(id, content) {
+        this.setState({
+            editing: true,
+            transclude: { id: id, content: content },
+        });
+    }
+
     render() {
         let editor = (
             <button
                 onClick={() => {
-                    this.setState({ editing: true });
-                    this.adjustDiscussionSize(false);
+                    this.setState({ editing: true }, () => {
+                        this.adjustDiscussionSize(false);
+                    });
                 }}
             >
                 Add a new post
@@ -126,10 +135,17 @@ class Discussion extends React.Component {
                 <PostEditor
                     discussionId={this.state.id}
                     onClose={() => {
-                        this.setState({ editing: false });
-                        this.adjustDiscussionSize(true);
+                        this.setState(
+                            { editing: false, transclude: null },
+                            () => {
+                                this.adjustDiscussionSize(true);
+                            }
+                        );
                     }}
                     onChange={() => this.adjustDiscussionSize(false)}
+                    transclude={
+                        this.state.transclude ? this.state.transclude : null
+                    }
                 />
             );
         }
@@ -142,6 +158,7 @@ class Discussion extends React.Component {
                         key={block}
                         id={block}
                         savedBlocks={this.state.savedBlocks}
+                        onReply={(data) => this.createReply(block, data)}
                         // content={block.content}
                         // tags={block.tags}
                         save
@@ -150,11 +167,7 @@ class Discussion extends React.Component {
             });
 
             return (
-                <Post
-                    key={post._id}
-                    time={post.created_at}
-                    author={this.state.names[post.user]["name"]}
-                >
+                <Post key={post._id} time={post.created_at} author={post.user}>
                     {blocks}
                 </Post>
             );

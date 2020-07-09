@@ -4,7 +4,7 @@ import Block from "./Block";
 
 import { makeSearch } from "../api/search";
 
-import "./EmbedMenu.css";
+import "./style/EmbedMenu.css";
 
 class EmbedMenu extends React.Component {
 	constructor(props) {

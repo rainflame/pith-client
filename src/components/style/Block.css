@@ -18,26 +18,26 @@
 }
 
 .block {
-	border: 1px solid #c9dbfc;
-	font-family: sans-serif;
-	font-size: 100%;
+	color: #ededed;
+	font-size: 1.1rem;
 	resize: none;
 	padding: 5px;
-	background-color: white;
+	padding-right: 25px;
+	/*background-color: #262626;*/
 }
 
 .block-transcluded {
-	background-color: #eff4fc;
+	background-color: #262626;
 	font-style: italic;
 }
 
 .block-saved {
-	border: 3px solid #88b0fc;
+	border: 3px solid #dcdcdc;
 	/*background-color: #ededed;*/
 }
 
 .block-saved-label {
-	color: #88b0fc;
+	color: #dcdcdc;
 	float: right;
 }
 
@@ -46,7 +46,7 @@
 	display: inline-block;
 	width: 40px;
 	position: relative;
-	top: -25px;
+	top: -30px;
 	float: right;
 	cursor: pointer;
 }
@@ -70,28 +70,26 @@
 	display: inline-block;
 	padding: 5px;
 	/*margin: 5px 0px;*/
-	border-left: 1px solid #c9dbfc;
-	border-right: 1px solid #c9dbfc;
-	border-bottom: 1px solid #c9dbfc;
-	background-color: white;
+	width: 65px;
+	background-color: #262626;
 }
 
 .toggle-icon {
-	color: #c9dbfc;
+	color: #999999;
 	font-size: 10px;
 	padding-right: 10px;
 }
 
 textarea {
-	width: calc(100% - 20px);
-	margin: 5px 5px;
-	background-color: white;
+	width: calc(100% - 40px);
+	margin: 0 5px;
+	background-color: #262626 !important;
 }
 
 .loader {
 	height: 5px;
 	width: 5px;
-	color: #c9dbfc;
+	color: #dcdcdc;
 	position: relative;
 	display: inline-block;
 	border: 3px solid;

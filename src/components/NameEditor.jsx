@@ -1,5 +1,7 @@
 import React from "react";
 
+import "./style/NameEditor.css";
+
 class NameEditor extends React.Component {
 	constructor(props) {
 		super(props);
@@ -21,9 +23,14 @@ class NameEditor extends React.Component {
 
 	render() {
 		return (
-			<div>
-				Enter a nickname
+			<div className="name-editor-wrapper">
+				<h1>Join Discussion</h1>
+				<div>
+					Before joining the discussion, choose a nickname. It'll be
+					how your posts are identified in the chat.
+				</div>
 				<input
+					placeholder="your nickname"
 					value={this.state.content}
 					onChange={this.handleChange}
 					onKeyDown={this.handleKeypress}

@@ -8,7 +8,7 @@ import {
 	getSavedBlocks,
 } from "../api/block";
 
-import "./Library.css";
+import "./style/Library.css";
 
 class Library extends React.Component {
 	constructor(props) {

@@ -1,7 +1,7 @@
 import React from "react";
 import EmbedMenu from "./EmbedMenu";
 
-import "./Block.css";
+import "./style/Block.css";
 
 class EditableBlock extends React.Component {
 	constructor(props) {

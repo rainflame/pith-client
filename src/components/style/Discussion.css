@@ -39,10 +39,9 @@
     padding: 10px;
     position: absolute;
     right: 20px;
-    background-color: #c9dbfc;
+    background-color: #101010;
 }
 
 button {
-    cursor: pointer;
-    border: 1px solid #c9dbfc;
+    margin-left: 10px;
 }

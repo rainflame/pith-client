@@ -4,7 +4,7 @@ import Post from "./Post";
 
 import { createPost } from "../api/post";
 
-import "./PostEditor.css";
+import "./style/PostEditor.css";
 
 class PostEditor extends React.Component {
     constructor(props) {
@@ -22,6 +22,16 @@ class PostEditor extends React.Component {
 
     componentDidUpdate() {
         this.props.onChange();
+    }
+
+    componentDidMount() {
+        if (this.props.transclude) {
+            this.addBlock(
+                0,
+                `transclude<${this.props.transclude.id}> (${this.props.transclude.content})`,
+                ""
+            );
+        }
     }
 
     handleSubmit(e) {
@@ -98,11 +108,7 @@ class PostEditor extends React.Component {
 
         return (
             <div className="post-editor">
-                <Post
-                    style={{ backgroundColor: "white" }}
-                    title="New Post"
-                    heightLimited={true}
-                >
+                <Post author="New Post" heightLimited={true}>
                     {blocks}
                 </Post>
                 <button onClick={this.handleSubmit}>Add post</button>

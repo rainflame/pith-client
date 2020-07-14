@@ -63,7 +63,9 @@ class Block extends React.Component {
 						this.setState({
 							content: data.body,
 							tags: data.tags,
-							saved: this.props.savedBlocks.includes(data._id),
+							saved: this.props.savedBlocks.includes(
+								data.block_id
+							),
 						});
 						// unsure if it's a good idea to have this listener in each of the block
 						// components, but it works for now

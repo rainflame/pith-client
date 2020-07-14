@@ -9,8 +9,13 @@ const listenForNewDiscussion = (func) => {
 	listener("created_discussion", func);
 };
 
-const createDiscussion = (func) => {
-	setter("create_discussion", null, false, func);
+const createDiscussion = (data, func) => {
+	setter(
+		"create_discussion",
+		{ title: data.title, theme: data.theme, time_limit: data.expiration },
+		false,
+		func
+	);
 };
 
 const joinDiscussion = (data, func) => {

@@ -1,4 +1,5 @@
 import React from "react";
+// import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 import Post from "./Post";
 import Block from "./Block";
@@ -7,7 +8,8 @@ import NameEditor from "./NameEditor";
 
 import { getPosts, listenForCreatedPosts } from "../api/post";
 import { getSavedBlocks } from "../api/block";
-import { joinDiscussion, getDiscussionNames } from "../api/discussion";
+import { joinDiscussion } from "../api/discussion";
+import { saveValue, getValue } from "../api/local";
 
 import "./style/Discussion.css";
 
@@ -17,6 +19,8 @@ class Discussion extends React.Component {
         this.state = {
             editing: false,
             chooseName: true,
+            title: "Discussion",
+            theme: "",
             posts: [],
             savedBlocks: [],
             scrolled: 100,
@@ -33,8 +37,15 @@ class Discussion extends React.Component {
         const {
             match: { params },
         } = this.props;
-        this.setState({ id: params.discussionId });
-        // this.adjustDiscussionSize();
+
+        this.setState({ id: params.discussionId }, () => {
+            // try to retrieve the discussion id from localstorage (indicating we've
+            // already joined it previously and don't need to make a new name)
+            const name = getValue(params.discussionId);
+            if (name !== null) {
+                this.joinDiscussion(name);
+            }
+        });
     }
 
     joinDiscussion(name) {
@@ -43,10 +54,11 @@ class Discussion extends React.Component {
                 { discussionId: this.state.id, name: name },
                 (data) => {
                     console.log("joined discussion!");
+                    this.setState({ title: data.title, theme: data.theme });
 
-                    getDiscussionNames(this.state.id, (data) => {
-                        this.setState({ names: data });
-                    });
+                    // save the discussion id in localstorage to indicate that we've
+                    // already joined it once
+                    saveValue(this.state.id, name);
 
                     getPosts(this.state.id, (data) => {
                         this.setState({ posts: data }, () => {
@@ -55,6 +67,7 @@ class Discussion extends React.Component {
                     });
 
                     getSavedBlocks({ discussionId: this.state.id }, (data) => {
+                        console.log(data);
                         this.setState({ savedBlocks: data });
                     });
 
@@ -81,7 +94,7 @@ class Discussion extends React.Component {
         )[0];
         if (editor) {
             overflow.style.height = `${
-                wrapperHeight - editor.clientHeight - 40
+                wrapperHeight - editor.clientHeight - 125
             }px`;
         } else {
             overflow.style.height = `${wrapperHeight - 140}px`;
@@ -165,11 +178,16 @@ class Discussion extends React.Component {
                     />
                 );
             });
-
             return (
-                <Post key={post._id} time={post.created_at} author={post.user}>
+                // <CSSTransition
+                //     key={post.post_id}
+                //     timeout={500}
+                //     classNames="item"
+                // >
+                <Post time={post.created_at} author={post.author_name}>
                     {blocks}
                 </Post>
+                //  </CSSTransition>
             );
         });
 
@@ -195,12 +213,18 @@ class Discussion extends React.Component {
         }
         return (
             <div className="discussion-wrapper">
-                <h2 className="discussion-header">Discussion</h2>
+                <div className="discussion-header">
+                    <h1>{this.state.title}</h1>
+                    <p className="discussion-theme">{this.state.theme}</p>
+                </div>
                 <div
                     className="discussion-overflow-wrapper"
                     onScroll={this.recordScrollPercent}
                 >
-                    <div className="discussion">{discussion}</div>
+                    <div className="discussion">
+                        {/*<TransitionGroup>{discussion}</TransitionGroup>*/}
+                        {discussion}
+                    </div>
                 </div>
                 {zoomButton}
                 {editor}

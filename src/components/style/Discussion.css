@@ -1,5 +1,5 @@
 :root {
-    --d-header-height: 40px;
+    --d-header-height: 110px;
     --d-footer-height: 60px;
 }
 
@@ -32,6 +32,11 @@
 .discussion-header {
     height: var(--d-header-height);
     margin: 0;
+    margin-left: 15px;
+}
+
+.discussion-theme {
+    font-family: freight-sans-pro, sans-serif;
 }
 
 .discussion-zoom {
@@ -41,6 +46,15 @@
     right: 20px;
     background-color: #101010;
 }
+
+/*.item-enter {
+    height: 0;
+    overflow: hidden;
+}
+.item-enter-active {
+    height: 75px;
+    transition: height 500ms ease-in;
+}*/
 
 button {
     margin-left: 10px;

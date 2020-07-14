@@ -1,6 +1,8 @@
 import openSocket from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 
+import { getValue, saveValue } from "./local";
+
 const socket = openSocket(process.env.REACT_APP_API);
 
 // the number of ms we wait before checking if we've received a respnse from the
@@ -21,13 +23,8 @@ let elapsed = 0;
 
 let waitingForCreateUser = false;
 
-// saving some basic info for later use in api calls
-let user = {
-	id: "",
-};
-
 function getUserId() {
-	return user.id;
+	return getValue("id");
 }
 
 function endCounter() {
@@ -54,8 +51,8 @@ function counter(job) {
 function nextEvent() {
 	// end the previous job's counter
 	endCounter();
-
-	if ((!socket.connected || user.id.length === 0) && !waitingForCreateUser) {
+	const id = getUserId();
+	if ((!socket.connected || id === null) && !waitingForCreateUser) {
 		waitingForCreateUser = true;
 		//console.log("Connecting to server");
 		connectAndCreateUser();
@@ -90,7 +87,7 @@ function connectAndCreateUser() {
 			const payload = { user_id: btoa(ip) };
 			socket.emit("create_user", payload, (data) => {
 				// save the user id so we can use it later when creating posts etc
-				user.id = JSON.parse(data)._id;
+				saveValue("id", payload.user_id);
 				waitingForCreateUser = false;
 				//console.log("Server connected");
 				// now we're connected and can make the next request
@@ -125,12 +122,13 @@ const setter = (eventName, payload, addAuth, func) => {
 				if (!payload) {
 					payload = {};
 				}
-				payload["user_id"] = user.id;
+				payload["user_id"] = getUserId();
 			}
 			socket.emit(eventName, payload, (data) => {
 				//console.log(`Completed "${eventName}" (request ${id})`);
 				nextEvent();
-				func(JSON.parse(data));
+				if (data !== undefined) data = JSON.parse(data);
+				func(data);
 			});
 		},
 		id,

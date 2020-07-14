@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
+
+import DiscussionEditor from "./DiscussionEditor";
 
 import {
 	getDiscussions,
@@ -29,22 +30,23 @@ class Board extends React.Component {
 		});
 
 		listenForNewDiscussion((data) => {
-			console.log(data);
 			const discussions = this.state.discussions;
-			discussions.push(data._id);
+			discussions.push(data);
 			this.setState({ discussions: discussions });
 		});
 	}
 
-	createDiscussion() {
-		createDiscussion((data) => {
-			console.log("new discussion created!");
-		});
+	createDiscussion(title, theme) {
+		createDiscussion(
+			{ title: title, theme: theme, expiration: 1000 },
+			(data) => {
+				console.log("new discussion created!");
+			}
+		);
 	}
 
 	render() {
 		const discussions = this.state.discussions.map((discussion) => {
-			console.log(discussion);
 			return (
 				<Link to={`${this.state.id}/d/${discussion}`} key={discussion}>
 					<div>{`Discussion ${discussion}`}</div>
@@ -53,8 +55,10 @@ class Board extends React.Component {
 		});
 		return (
 			<div>
+				<h1>Discussions</h1>
 				{discussions}
-				<div onClick={this.createDiscussion}>Create new discussion</div>
+				<h3>Create Discussion</h3>
+				<DiscussionEditor onSubmit={this.createDiscussion} />
 			</div>
 		);
 	}

@@ -31,6 +31,10 @@ class BlockSearch extends React.Component {
 	}
 
 	blockSearch() {
+		console.log({
+			query: this.state.value,
+			discussion_id: this.props.discussionId,
+		});
 		makeBlockSearch(
 			{ query: this.state.value, discussionId: this.props.discussionId },
 			(data) => {

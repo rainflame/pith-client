@@ -20,6 +20,9 @@ class PostEditor extends React.Component {
         this.addBlock = this.addBlock.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.checkForTransclusion = this.checkForTransclusion.bind(this);
+
+        this.onOpen = this.onOpen.bind(this);
+        this.onClose = this.onClose.bind(this);
     }
 
     componentDidUpdate() {
@@ -68,10 +71,20 @@ class PostEditor extends React.Component {
                 { blocks: cleaned, discussionId: this.props.discussionId },
                 (data) => {
                     console.log("Added post!");
-                    this.props.onClose();
+                    this.onClose();
                 }
             );
         }
+    }
+
+    onClose() {
+        this.setState({ blocks: [""] });
+        this.props.onClose();
+    }
+
+    onOpen() {
+        this.setState({ focusIndex: 0 });
+        this.props.onOpen();
     }
 
     updateBlock(index, value) {
@@ -118,15 +131,20 @@ class PostEditor extends React.Component {
             />
         ));
 
-        return (
-            <div className="post-editor">
-                <Post author="New Post" heightLimited={true}>
-                    {blocks}
-                </Post>
-                <button onClick={this.handleSubmit}>Add post</button>
-                <button onClick={this.props.onClose}>Cancel</button>
-            </div>
-        );
+        let content = <button onClick={this.onOpen}>Add a new post</button>;
+        if (this.props.editing) {
+            content = (
+                <div className="post-editor-content">
+                    <Post author="New Post" heightLimited={true}>
+                        {blocks}
+                    </Post>
+                    <button onClick={this.handleSubmit}>Add post</button>
+                    <button onClick={this.onClose}>Cancel</button>
+                </div>
+            );
+        }
+
+        return <div className="post-editor">{content}</div>;
     }
 }
 

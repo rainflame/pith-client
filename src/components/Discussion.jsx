@@ -83,7 +83,7 @@ class Discussion extends React.Component {
         });
     }
 
-    adjustDiscussionSize(checkScrollPosition) {
+    adjustDiscussionSize(checkScrollPosition, ignoreNewPosts) {
         // this is kind of a stupid way of shrinking the chat content
         const editor = document.getElementsByClassName("post-editor")[0];
         const wrapperHeight = document.getElementsByClassName(
@@ -106,7 +106,7 @@ class Discussion extends React.Component {
                 if (this.state.missedPosts > 0) {
                     this.setState({ missedPosts: 0 });
                 }
-            } else {
+            } else if (!ignoreNewPosts) {
                 this.setState({ missedPosts: this.state.missedPosts + 1 });
             }
         }
@@ -131,36 +131,6 @@ class Discussion extends React.Component {
     }
 
     render() {
-        let editor = (
-            <button
-                onClick={() => {
-                    this.setState({ editing: true }, () => {
-                        this.adjustDiscussionSize(false);
-                    });
-                }}
-            >
-                Add a new post
-            </button>
-        );
-
-        if (this.state.editing) {
-            editor = (
-                <PostEditor
-                    discussionId={this.state.id}
-                    onClose={() => {
-                        this.setState(
-                            { editing: false, transclude: null },
-                            () => {
-                                this.adjustDiscussionSize(true);
-                            }
-                        );
-                    }}
-                    onChange={() => this.adjustDiscussionSize(false)}
-                    transclude={this.state.transclude || null}
-                />
-            );
-        }
-
         const discussion = this.state.posts.map((post) => {
             const blocks = post.blocks.map((block) => {
                 return (
@@ -225,7 +195,25 @@ class Discussion extends React.Component {
                     </div>
                 </div>
                 {zoomButton}
-                {editor}
+                <PostEditor
+                    editing={this.state.editing}
+                    discussionId={this.state.id}
+                    onOpen={() => {
+                        this.setState({ editing: true }, () => {
+                            this.adjustDiscussionSize(true, true);
+                        });
+                    }}
+                    onClose={() => {
+                        this.setState(
+                            { editing: false, transclude: null },
+                            () => {
+                                this.adjustDiscussionSize(true);
+                            }
+                        );
+                    }}
+                    onChange={() => this.adjustDiscussionSize(false)}
+                    transclude={this.state.transclude || null}
+                />
             </div>
         );
     }

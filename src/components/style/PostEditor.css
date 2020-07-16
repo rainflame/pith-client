@@ -11,6 +11,9 @@
 	width: calc(100% - var(--column-padding) * 2);
 }
 
+.post-editor-content {
+	width: 100%;
+}
 button {
 	margin-top: 20px;
 }

@@ -45,6 +45,7 @@
     position: absolute;
     right: 20px;
     background-color: #101010;
+    z-index: 1000;
 }
 
 /*.item-enter {

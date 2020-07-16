@@ -4,8 +4,13 @@
 	border-radius: 0 !important;
 	/*max-width: 100px;*/
 	pointer-events: all !important;
+	/*	box-shadow: 5px 7px #1e1e1e; */
+	border: 2px solid #999999 !important;
 }
 
+.absolute-menu::after {
+	border: none !important;
+}
 .absolute-menu-control {
 	text-align: right;
 	display: inline-block;

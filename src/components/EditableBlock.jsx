@@ -1,5 +1,6 @@
 import React from "react";
-import EmbedMenu from "./EmbedMenu";
+import BlockSearch from "./BlockSearch";
+import AbsoluteMenu from "./AbsoluteMenu";
 
 import "./style/Block.css";
 
@@ -19,7 +20,7 @@ class EditableBlock extends React.Component {
 	}
 
 	checkFocus() {
-		if (this.props.focus) {
+		if (this.props.focus && !this.state.menu) {
 			this.inputRef.focus();
 		}
 		this.checkHeight();
@@ -61,12 +62,6 @@ class EditableBlock extends React.Component {
 				// add the current content to the previous block and delete
 				this.props.onDelete(this.props.content);
 				e.preventDefault();
-			} else if (
-				this.state.menu &&
-				this.props.content.length <= this.state.index
-			) {
-				// when we delete the \, close the menu
-				this.setState({ menu: false });
 			}
 		} else if (e.keyCode === 13) {
 			// on enter/return key press
@@ -80,35 +75,12 @@ class EditableBlock extends React.Component {
 			// move the content after to a new block below
 			this.props.onNewline(reserved, selection);
 			e.preventDefault();
-		} else if (e.keyCode === 220) {
-			// on \ open the menu
-			const cursorInd = this.props.content.length + 1;
-			this.setState({
-				menu: true,
-				index: cursorInd,
-			});
 		}
 
 		this.checkHeight();
 	}
 
 	render() {
-		let menu;
-		const query = this.props.content.substr(
-			this.state.index,
-			this.props.content.length
-		);
-
-		if (this.state.menu) {
-			menu = (
-				<EmbedMenu
-					onClick={this.addTransclusion}
-					onChange={this.props.onChange}
-					query={query}
-				/>
-			);
-		}
-
 		return (
 			<div>
 				<textarea
@@ -122,7 +94,19 @@ class EditableBlock extends React.Component {
 					onChange={this.handleChange}
 					onKeyDown={this.handleKeypress}
 				/>
-				{menu}
+
+				<AbsoluteMenu
+					id="search"
+					position="left"
+					onShow={() => this.setState({ menu: true })}
+					onHide={() => this.setState({ menu: false })}
+				>
+					<BlockSearch
+						onClick={this.addTransclusion}
+						discussionId={this.props.discussionId}
+						focus={this.state.menu}
+					/>
+				</AbsoluteMenu>
 			</div>
 		);
 	}

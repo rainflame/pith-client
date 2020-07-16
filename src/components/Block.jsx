@@ -1,5 +1,6 @@
 import React from "react";
 import TagEditor from "./TagEditor";
+import AbsoluteMenu from "./AbsoluteMenu";
 import {
 	getBlock,
 	saveBlock,
@@ -30,7 +31,6 @@ class Block extends React.Component {
 		this.updateSaveBlock = this.updateSaveBlock.bind(this);
 		this.addTagToBlock = this.addTagToBlock.bind(this);
 		this.removeTagFromBlock = this.removeTagFromBlock.bind(this);
-		this.toggleControls = this.toggleControls.bind(this);
 		this.getBlockContent = this.getBlockContent.bind(this);
 	}
 
@@ -157,58 +157,32 @@ class Block extends React.Component {
 		);
 	}
 
-	toggleControls() {
-		if (!this.state.controls) {
-			const closeControls = () => {
-				this.setState({ controls: false });
-				document.removeEventListener("click", closeControls);
-			};
-			// add an event listener to close the dropdown the next time
-			// the user clicks anywhere
-			document.addEventListener("click", closeControls);
-		}
-		this.setState({ controls: !this.state.controls });
-	}
-
 	render() {
 		let dropdown;
 		let controls;
 
 		if (!this.props.uneditable) {
-			if (this.state.controls) {
-				controls = (
-					<div className="block-controls">
-						<div
-							className="block-button"
-							onClick={() =>
-								this.props.onReply(this.state.content)
-							}
-						>
-							Reply
-						</div>
-						<div
-							className="block-button"
-							onClick={this.updateSaveBlock}
-						>
-							{this.state.saved ? "Unsave" : "Save"}
-						</div>
-						<div
-							className="block-button"
-							onClick={() => this.setState({ tagEditor: true })}
-						>
-							Add Tag
-						</div>
+			controls = (
+				<AbsoluteMenu id={this.state.ogId}>
+					<div
+						className="block-button"
+						onClick={() => this.props.onReply(this.state.content)}
+					>
+						Reply
 					</div>
-				);
-			}
-
-			dropdown = (
-				<div
-					className="block-toggle-controls"
-					onClick={this.toggleControls}
-				>
-					<span className="toggle-icon">▼</span> {controls}
-				</div>
+					<div
+						className="block-button"
+						onClick={this.updateSaveBlock}
+					>
+						{this.state.saved ? "Unsave" : "Save"}
+					</div>
+					<div
+						className="block-button"
+						onClick={() => this.setState({ tagEditor: true })}
+					>
+						Add Tag
+					</div>
+				</AbsoluteMenu>
 			);
 		}
 
@@ -236,7 +210,7 @@ class Block extends React.Component {
 						<span />
 					)}
 				</div>
-				{dropdown}
+				{controls}
 				<TagEditor
 					visible={this.state.tagEditor}
 					tags={this.state.tags}

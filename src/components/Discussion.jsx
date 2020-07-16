@@ -156,9 +156,7 @@ class Discussion extends React.Component {
                         );
                     }}
                     onChange={() => this.adjustDiscussionSize(false)}
-                    transclude={
-                        this.state.transclude ? this.state.transclude : null
-                    }
+                    transclude={this.state.transclude || null}
                 />
             );
         }

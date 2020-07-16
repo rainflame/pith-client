@@ -12,25 +12,36 @@ class PostEditor extends React.Component {
         this.state = {
             blocks: [""],
             focusIndex: 0,
+            prevTransclusion: "",
         };
 
         this.updateBlock = this.updateBlock.bind(this);
         this.removeBlock = this.removeBlock.bind(this);
         this.addBlock = this.addBlock.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.checkForTransclusion = this.checkForTransclusion.bind(this);
     }
 
     componentDidUpdate() {
         this.props.onChange();
+        this.checkForTransclusion();
     }
 
     componentDidMount() {
-        if (this.props.transclude) {
+        this.checkForTransclusion();
+    }
+
+    checkForTransclusion() {
+        if (
+            this.props.transclude &&
+            this.props.transclude !== this.state.prevTransclusion
+        ) {
             this.addBlock(
                 0,
                 `transclude<${this.props.transclude.id}> (${this.props.transclude.content})`,
                 ""
             );
+            this.setState({ prevTransclusion: this.props.transclude });
         }
     }
 
@@ -94,6 +105,7 @@ class PostEditor extends React.Component {
         const blocks = this.state.blocks.map((block, index) => (
             <EditableBlock
                 key={index}
+                discussionId={this.props.discussionId}
                 content={block}
                 editable
                 focus={this.state.focusIndex === index}

@@ -1,0 +1,13 @@
+.block-search-wrapper {
+	max-width: 300px;
+	width: 100vw;
+}
+
+.block-search-buttons > button {
+	margin-left: 0;
+	margin-top: 10px;
+}
+
+.block-search-wrapper > input {
+	width: calc(100% - 20px);
+}

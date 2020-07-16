@@ -1,12 +1,22 @@
 import { getter } from "./apiConnection";
 
 // searching
-const makeSearch = (data, func) => {
-	getter("search_discussion", { query: data, discussion_id: 42 }, true, func);
+const makeBlockSearch = (data, func) => {
+	getter(
+		"search_discussion",
+		{ query: data.query, discussion_id: data.discussionId },
+		false,
+		func
+	);
 };
 
-const makeUserSearch = (data, func) => {
-	getter("search_user_saved", { query: data, discussion_id: 42 }, true, func);
+const makeTagSearch = (data, func) => {
+	getter(
+		"search_discussion_tags",
+		{ tags: data.query, discussion_id: data.discussionId },
+		false,
+		func
+	);
 };
 
-export { makeSearch, makeUserSearch };
+export { makeBlockSearch, makeTagSearch };

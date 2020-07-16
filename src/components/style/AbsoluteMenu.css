@@ -1,0 +1,21 @@
+.absolute-menu {
+	background-color: #262626 !important;
+	opacity: 1 !important;
+	border-radius: 0 !important;
+	/*max-width: 100px;*/
+	pointer-events: all !important;
+}
+
+.absolute-menu-control {
+	text-align: right;
+	display: inline-block;
+	width: 40px;
+	position: relative;
+	top: -22px;
+	float: right;
+	cursor: pointer;
+
+	color: #999999;
+	font-size: 10px;
+	padding-right: 10px;
+}

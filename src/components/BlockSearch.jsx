@@ -13,6 +13,7 @@ class BlockSearch extends React.Component {
 		this.state = {
 			recs: [],
 			value: "",
+			failed: false,
 		};
 
 		this.handleChange = this.handleChange.bind(this);
@@ -27,7 +28,7 @@ class BlockSearch extends React.Component {
 	}
 
 	handleChange(e) {
-		this.setState({ value: e.target.value });
+		this.setState({ value: e.target.value, failed: false });
 	}
 
 	blockSearch() {
@@ -38,7 +39,10 @@ class BlockSearch extends React.Component {
 		makeBlockSearch(
 			{ query: this.state.value, discussionId: this.props.discussionId },
 			(data) => {
-				console.log(data);
+				this.setState({
+					recs: data.blocks,
+					failed: data.blocks.length === 0,
+				});
 			}
 		);
 	}
@@ -50,7 +54,10 @@ class BlockSearch extends React.Component {
 		makeTagSearch(
 			{ query: query, discussionId: this.props.discussionId },
 			(data) => {
-				console.log(data);
+				this.setState({
+					recs: data.blocks,
+					failed: data.blocks.length === 0,
+				});
 			}
 		);
 	}
@@ -60,7 +67,8 @@ class BlockSearch extends React.Component {
 			return (
 				<Block
 					id={id}
-					showSaved
+					discussionId={this.props.discussionId}
+					searchContext
 					key={id}
 					style={{ cursor: "pointer" }}
 					transcluded={true}
@@ -71,7 +79,7 @@ class BlockSearch extends React.Component {
 		});
 		return (
 			<div className="block-search-wrapper">
-				<h2>Search</h2>
+				<h2>Search discussion</h2>
 				<input
 					ref={(input) => {
 						this.inputRef = input;
@@ -84,11 +92,10 @@ class BlockSearch extends React.Component {
 					<button onClick={this.blockSearch}>Block search</button>
 					<button onClick={this.tagSearch}>Tag search</button>
 				</div>
-				{clickBlocks.length > 0 ? (
-					clickBlocks
-				) : (
-					<div className="removed-loader" />
-				)}
+				<div className="block-search-annotation">
+					{this.state.failed ? "No results" : ""}
+				</div>
+				<div className="block-search-suggestions">{clickBlocks}</div>
 			</div>
 		);
 	}

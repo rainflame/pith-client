@@ -12,3 +12,15 @@
 .block-search-wrapper > input {
 	width: calc(100% - 20px);
 }
+
+.block-search-suggestions {
+	/*margin-top: 20px;*/
+	margin: 0-5px;
+	margin-bottom: 0;
+	max-height: 200px;
+	overflow: auto;
+}
+
+.block-search-annotation {
+	margin-top: 10px;
+}

@@ -63,9 +63,9 @@ class Block extends React.Component {
 						this.setState({
 							content: data.body,
 							tags: data.tags,
-							saved: this.props.savedBlocks.includes(
-								data.block_id
-							),
+							saved: this.props.savedBlocks
+								? this.props.savedBlocks.includes(data.block_id)
+								: false,
 						});
 						// unsure if it's a good idea to have this listener in each of the block
 						// components, but it works for now
@@ -158,7 +158,6 @@ class Block extends React.Component {
 	}
 
 	render() {
-		let dropdown;
 		let controls;
 
 		if (!this.props.uneditable) {
@@ -191,7 +190,9 @@ class Block extends React.Component {
 				<div
 					className={`block ${
 						this.state.transcluded ? "block-transcluded" : ""
-					} ${this.state.saved ? "block-saved" : ""}`}
+					} ${this.state.saved ? "block-saved" : ""} ${
+						this.props.searchContext ? "block-dark" : ""
+					}`}
 					style={this.props.style ? this.props.style : {}}
 					onClick={() =>
 						this.props.onClick

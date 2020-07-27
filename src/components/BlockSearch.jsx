@@ -68,7 +68,7 @@ class BlockSearch extends React.Component {
 				<Block
 					id={id}
 					discussionId={this.props.discussionId}
-					searchContext
+					dark={true}
 					key={id}
 					style={{ cursor: "pointer" }}
 					transcluded={true}

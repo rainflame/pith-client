@@ -8,18 +8,16 @@ import Discussion from "./components/Discussion";
 function App() {
 	return (
 		<div className="App">
-			<div className="wrapper">
-				<Router>
-					<Switch>
-						<Route
-							exact
-							path="/b/:boardId/d/:discussionId"
-							component={Discussion}
-						/>
-						<Route exact path="/b/:boardId" component={Board} />
-					</Switch>
-				</Router>
-			</div>
+			<Router>
+				<Switch>
+					<Route
+						exact
+						path="/b/:boardId/d/:discussionId"
+						component={Discussion}
+					/>
+					<Route exact path="/b/:boardId" component={Board} />
+				</Switch>
+			</Router>
 		</div>
 	);
 }

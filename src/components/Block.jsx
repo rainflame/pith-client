@@ -191,7 +191,7 @@ class Block extends React.Component {
 					className={`block ${
 						this.state.transcluded ? "block-transcluded" : ""
 					} ${this.state.saved ? "block-saved" : ""} ${
-						this.props.searchContext ? "block-dark" : ""
+						this.props.dark ? "block-dark" : ""
 					}`}
 					style={this.props.style ? this.props.style : {}}
 					onClick={() =>
@@ -207,9 +207,7 @@ class Block extends React.Component {
 					)}
 					{this.props.showSaved && this.state.saved ? (
 						<span className="block-saved-label">Saved Block</span>
-					) : (
-						<span />
-					)}
+					) : null}
 				</div>
 				{controls}
 				<TagEditor

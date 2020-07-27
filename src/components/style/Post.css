@@ -1,6 +1,6 @@
 .post {
-	padding: 5px;
-	/*margin: 10px 0;*/
+	/*padding: 5px;*/
+	margin: 10px 0;
 	/*background-color: #eff4fc;*/
 	/*border: 1px solid #c9dbfc;*/
 	width: 100%;
@@ -14,18 +14,19 @@
 .post-title {
 	font-family: freight-sans-pro, sans-serif;
 	display: inline-block;
-	margin-top: 0px;
-	margin-left: 10px;
+	margin: 0;
 	margin-right: 10px;
-	margin-bottom: 5px;
 	color: #4c4c4c;
 }
 
 .post-subtitle {
 	color: #4c4c4c;
-	margin-top: 0;
-	margin-bottom: 5px;
+	margin: 0;
 	font-family: freight-sans-pro, sans-serif;
 	display: inline-block;
 	font-weight: normal;
+}
+
+.post-header {
+	padding: 5px 0;
 }

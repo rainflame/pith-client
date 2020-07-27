@@ -16,11 +16,16 @@
 	display: inline-block;
 	width: 40px;
 	position: relative;
-	top: -22px;
+	margin-top: -25px;
 	float: right;
 	cursor: pointer;
 
 	color: #999999;
 	font-size: 10px;
-	padding-right: 10px;
+	padding-right: 15px;
+}
+
+.search-icon {
+	margin-top: -10px;
+	height: 25px;
 }

@@ -5,11 +5,13 @@ import "./style/Post.css";
 
 function Post(props) {
 	const date = moment(props.time);
-	let format = "M/D/YY, h:mm A";
-	if (date.isSame(new Date(), "day")) {
-		format = "h:mm A";
-	}
-	const formattedDate = date.format(format);
+
+	const formattedDate = date.calendar({
+		sameDay: "[Today at] h:mm A",
+		lastDay: "[Yesterday at] h:mm A",
+		lastWeek: "dddd [at] h:mm A",
+		sameElse: "M/D/YY [at] h:mm A",
+	});
 
 	return (
 		<div
@@ -18,8 +20,10 @@ function Post(props) {
 			}`}
 			style={props.style}
 		>
-			<h4 className="post-title">{props.author}</h4>
-			<h4 className="post-subtitle">{formattedDate}</h4>
+			<div className="post-header">
+				<h4 className="post-title">{props.author}</h4>
+				<h4 className="post-subtitle">{formattedDate}</h4>
+			</div>
 			{props.children}
 		</div>
 	);

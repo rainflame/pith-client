@@ -121,6 +121,7 @@ class PostEditor extends React.Component {
                 discussionId={this.props.discussionId}
                 content={block}
                 editable
+                last={index === this.state.blocks.length - 1}
                 focus={this.state.focusIndex === index}
                 onEdit={(value) => this.updateBlock(index, value)}
                 onChange={this.props.onChange}

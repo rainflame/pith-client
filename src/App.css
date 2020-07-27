@@ -12,18 +12,17 @@ body {
 	background-color: #222222;
 }
 
-.wrapper {
-	display: flex;
-	justify-content: center;
-	flex-wrap: wrap;
-}
-
 input,
 textarea {
 	border: none;
 	font-family: freight-text-pro, serif;
 	color: #dcdcdc;
 	font-size: 1rem;
+}
+
+textarea:focus,
+input:focus {
+	background-color: #313131;
 }
 
 button {

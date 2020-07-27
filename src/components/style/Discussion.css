@@ -1,62 +1,18 @@
-:root {
-    --d-header-height: 110px;
-    --d-footer-height: 60px;
-}
-
 .discussion-wrapper {
-    max-width: var(--column-width);
-    height: calc(100vh - var(--column-padding) * 2);
-    max-height: 1350px;
-    width: 100%;
-    padding: var(--column-padding);
-    position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	align-content: flex-start;
+	/*justify-content: flex-start;*/
+	flex-wrap: wrap;
+	width: 100%;
 }
 
-.discussion-overflow-wrapper {
-    height: calc(
-        100% - var(--d-header-height) - var(--d-footer-height) -
-            var(--column-padding) * 2
-    );
-    /*max-height: 80%;*/
-    overflow-y: auto;
-}
-
-.discussion {
-    min-height: 100%;
-    display: flex;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    align-content: flex-end;
-}
-
-.discussion-header {
-    height: var(--d-header-height);
-    margin: 0;
-    margin-left: 15px;
+.discussion-title-wrapper {
+	padding-left: 10px;
+	width: 100%;
 }
 
 .discussion-theme {
-    font-family: freight-sans-pro, sans-serif;
-}
-
-.discussion-zoom {
-    cursor: pointer;
-    padding: 10px;
-    position: absolute;
-    right: 20px;
-    background-color: #101010;
-    z-index: 1000;
-}
-
-/*.item-enter {
-    height: 0;
-    overflow: hidden;
-}
-.item-enter-active {
-    height: 75px;
-    transition: height 500ms ease-in;
-}*/
-
-button {
-    margin-left: 10px;
+	font-family: freight-sans-pro, sans-serif;
 }

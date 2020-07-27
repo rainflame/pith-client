@@ -2,6 +2,8 @@ import React from "react";
 import BlockSearch from "./BlockSearch";
 import AbsoluteMenu from "./AbsoluteMenu";
 
+import search from "../icons/search.svg";
+
 import "./style/Block.css";
 
 class EditableBlock extends React.Component {
@@ -81,8 +83,25 @@ class EditableBlock extends React.Component {
 	}
 
 	render() {
+		const menu = this.props.last ? (
+			<AbsoluteMenu
+				id="search"
+				position="left"
+				icon={search}
+				iconClass="search-icon"
+				alwaysOn
+				onShow={() => this.setState({ menu: true })}
+				onHide={() => this.setState({ menu: false })}
+			>
+				<BlockSearch
+					onClick={this.addTransclusion}
+					discussionId={this.props.discussionId}
+					focus={this.state.menu}
+				/>
+			</AbsoluteMenu>
+		) : null;
 		return (
-			<div>
+			<div className="block-wrapper">
 				<textarea
 					className="block"
 					placeholder="New block"
@@ -94,19 +113,7 @@ class EditableBlock extends React.Component {
 					onChange={this.handleChange}
 					onKeyDown={this.handleKeypress}
 				/>
-
-				<AbsoluteMenu
-					id="search"
-					position="left"
-					onShow={() => this.setState({ menu: true })}
-					onHide={() => this.setState({ menu: false })}
-				>
-					<BlockSearch
-						onClick={this.addTransclusion}
-						discussionId={this.props.discussionId}
-						focus={this.state.menu}
-					/>
-				</AbsoluteMenu>
+				{menu}
 			</div>
 		);
 	}

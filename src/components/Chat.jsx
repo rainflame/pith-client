@@ -146,54 +146,54 @@ class Chat extends React.Component {
         }
 
         return (
-            <div>
-                <AccordionPanel title="Discussion" open>
-                    <div className="chat-wrapper">
-                        <div
-                            className="chat-overflow-wrapper"
-                            onScroll={this.recordScrollPercent}
-                        >
-                            <div className="chat">
-                                {/*<TransitionGroup>{discussion}</TransitionGroup>*/}
-                                {chat}
-                            </div>
+            <div className="chat-container">
+                <h2>Discussion</h2>
+                <div className="chat-wrapper">
+                    <div
+                        className="chat-overflow-wrapper"
+                        onScroll={this.recordScrollPercent}
+                    >
+                        <div className="chat">
+                            {/*<TransitionGroup>{discussion}</TransitionGroup>*/}
+                            {chat}
                         </div>
-                        {zoomButton}
-                        <PostEditor
-                            editing={this.state.editing}
-                            discussionId={this.state.id}
-                            onOpen={() => {
-                                this.setState({ editing: true }, () => {
-                                    this.adjustChatSize(true, true);
-                                });
-                            }}
-                            onClose={() => {
-                                this.setState(
-                                    { editing: false, transclude: null },
-                                    () => {
-                                        this.adjustChatSize(true);
-                                    }
-                                );
-                            }}
-                            onChange={() => this.adjustChatSize(false)}
-                            transclude={this.state.transclude || null}
-                        />
                     </div>
-                </AccordionPanel>
-                <AccordionPanel
-                    title="Your saved blocks"
-                    onOpen={() => {
-                        window.scrollTo(0, document.body.scrollHeight);
-                    }}
-                >
-                    <Library
-                        id={this.state.id}
-                        createReply={this.createReply}
+                    {zoomButton}
+                    <PostEditor
+                        editing={this.state.editing}
+                        discussionId={this.state.id}
+                        onOpen={() => {
+                            this.setState({ editing: true }, () => {
+                                this.adjustChatSize(true, true);
+                            });
+                        }}
+                        onClose={() => {
+                            this.setState(
+                                { editing: false, transclude: null },
+                                () => {
+                                    this.adjustChatSize(true);
+                                }
+                            );
+                        }}
+                        onChange={() => this.adjustChatSize(false)}
+                        transclude={this.state.transclude || null}
                     />
-                </AccordionPanel>
+                </div>
             </div>
         );
     }
 }
 
 export default Chat;
+
+// <AccordionPanel
+//                     title="Your saved blocks"
+//                     onOpen={() => {
+//                         window.scrollTo(0, document.body.scrollHeight);
+//                     }}
+//                 >
+//                     <Library
+//                         id={this.state.id}
+//                         createReply={this.createReply}
+//                     />
+//                 </AccordionPanel>

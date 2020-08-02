@@ -37,6 +37,18 @@ const getBlock = (data, func) => {
 	);
 };
 
+const addBlockToSummary = (data, func) => {
+	setter(
+		"summary_add_block",
+		{
+			body: data.body,
+			discussion_id: data.discussionId,
+		},
+		false,
+		func
+	);
+};
+
 const addTagToBlock = (data, func) => {
 	setter(
 		"block_add_tag",
@@ -86,6 +98,7 @@ export {
 	unsaveBlock,
 	getSavedBlocks,
 	addTagToBlock,
+	addBlockToSummary,
 	removeTagFromBlock,
 	listenForSavedBlock,
 	listenForUnsavedBlock,

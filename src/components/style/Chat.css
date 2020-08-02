@@ -1,5 +1,9 @@
-.chat-wrapper {
+.chat-container {
     max-width: var(--column-width);
+    width: 100%;
+}
+
+.chat-wrapper {
     height: calc(85vh - (var(--column-padding) * 2));
     max-height: 1200px;
     /*padding: 10px;*/

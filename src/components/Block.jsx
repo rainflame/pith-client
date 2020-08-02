@@ -11,6 +11,7 @@ import {
 	listenForUntaggedBlock,
 	listenForSavedBlock,
 	listenForUnsavedBlock,
+	addBlockToSummary,
 } from "../api/block";
 
 import "./style/Block.css";
@@ -30,6 +31,7 @@ class Block extends React.Component {
 
 		this.updateSaveBlock = this.updateSaveBlock.bind(this);
 		this.addTagToBlock = this.addTagToBlock.bind(this);
+		this.addToSummary = this.addToSummary.bind(this);
 		this.removeTagFromBlock = this.removeTagFromBlock.bind(this);
 		this.getBlockContent = this.getBlockContent.bind(this);
 	}
@@ -127,6 +129,16 @@ class Block extends React.Component {
 		}
 	}
 
+	addToSummary() {
+		const transcludedBlock = `transclude<${this.state.id}>`;
+		addBlockToSummary(
+			{ discussionId: this.props.discussionId, body: transcludedBlock },
+			(data) => {
+				console.log("added block to summary!");
+			}
+		);
+	}
+
 	addTagToBlock(tag) {
 		const cleanedTag = tag.trim();
 		if (cleanedTag !== "" && !(cleanedTag in this.state.tags)) {
@@ -168,6 +180,9 @@ class Block extends React.Component {
 						onClick={() => this.props.onReply(this.state.content)}
 					>
 						Reply
+					</div>
+					<div className="block-button" onClick={this.addToSummary}>
+						Add to summary
 					</div>
 					<div
 						className="block-button"

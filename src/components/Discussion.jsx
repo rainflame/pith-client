@@ -38,6 +38,7 @@ class Discussion extends React.Component {
 			joinDiscussion(
 				{ discussionId: this.state.id, name: name },
 				(data) => {
+					console.log(data);
 					console.log("joined discussion!");
 					this.setState({ title: data.title, theme: data.theme });
 

@@ -16,6 +16,8 @@ import {
 	ADD_POST,
 	ADD_POST_FULFILLED,
 	SUBSCRIBED_TO_DISCUSSION,
+	SEARCH_DISCUSSION,
+	SEARCH_DISCUSSION_FULFILLED,
 } from "./types";
 
 const joinDiscussion = (discussionID, userID, pseudonym) => {
@@ -73,12 +75,11 @@ const loadBlockHelper = (discussionID, blockID) => {
 	});
 };
 
-const loadDiscussion = (discussionID) => {
+const loadDiscussion = (discussionID, userID) => {
 	return (dispatch) => {
 		dispatch({ type: LOAD_DISCUSSION });
 		// load the discussions' posts and the posts' blocks.
-		const data = { discussion_id: discussionID };
-		socket.emit("get_posts", data, (res) => {
+		socket.emit("get_posts", { discussion_id: discussionID }, (res) => {
 			try {
 				res = JSON.parse(res);
 				const loadedPosts = res;
@@ -118,12 +119,23 @@ const loadDiscussion = (discussionID) => {
 									post.blocks.length - 1 &&
 								parseInt(postsInd) === res.length - 1
 							) {
-								dispatch({
-									type: LOAD_DISCUSSION_FULFILLED,
-									payload: {
-										blocks: loadedBlocks,
-										posts: loadedPosts,
-									},
+								const data = {
+									discussion_id: discussionID,
+									user_id: userID,
+								};
+								// get the user's saved blocks
+								socket.emit("get_saved_blocks", data, (res) => {
+									const loadedSavedBlocks = JSON.parse(res);
+
+									// dispatch the final loaded data
+									dispatch({
+										type: LOAD_DISCUSSION_FULFILLED,
+										payload: {
+											blocks: loadedBlocks,
+											posts: loadedPosts,
+											savedBlocks: loadedSavedBlocks,
+										},
+									});
 								});
 							}
 						});
@@ -137,6 +149,7 @@ const loadDiscussion = (discussionID) => {
 };
 
 const subscribeToDiscussion = (discussionID) => {
+	// add all the socket event listeners for a given discussion
 	return (dispatch) => {
 		socket.on("saved_block", (data) => {
 			data = JSON.parse(data);
@@ -172,7 +185,6 @@ const subscribeToDiscussion = (discussionID) => {
 		});
 		socket.on("created_post", (data) => {
 			const post = JSON.parse(data);
-
 			const loadedBlocks = {};
 
 			// load the new post's blocks
@@ -221,9 +233,102 @@ const addPostToDiscussion = (discussionID, userID, blocks) => {
 	};
 };
 
+const addTagToBlock = (discussionID, userID, blockID, tag) => {
+	return (dispatch) => {
+		const data = {
+			discussion_id: discussionID,
+			user_id: userID,
+			block_id: blockID,
+			tag: tag,
+		};
+		socket.emit("block_add_tag", data, (res) => {
+			// nothing happens here because we're waiting for this to
+			// emit a new event to the room called "tag_block", which
+			// is listened for in subscribeToDiscussion
+		});
+	};
+};
+
+const removeTagFromBlock = (discussionID, userID, blockID, tag) => {
+	return (dispatch) => {
+		const data = {
+			discussion_id: discussionID,
+			user_id: userID,
+			block_id: blockID,
+			tag: tag,
+		};
+		// see addTagToBlock for why we don't update state
+		socket.emit("block_remove_tag", data, (res) => {});
+	};
+};
+
+const saveBlock = (discussionID, userID, blockID) => {
+	return (dispatch) => {
+		const data = {
+			discussion_id: discussionID,
+			user_id: userID,
+			block_id: blockID,
+		};
+		// see addTagToBlock for why we don't update state
+		socket.emit("save_block", data, (res) => {});
+	};
+};
+
+const unsaveBlock = (discussionID, userID, blockID) => {
+	return (dispatch) => {
+		const data = {
+			discussion_id: discussionID,
+			user_id: userID,
+			block_id: blockID,
+		};
+		// see addTagToBlock for why we don't update state
+		socket.emit("unsave_block", data, (res) => {});
+	};
+};
+
+const blockSearch = (discussionID, query) => {
+	return (dispatch) => {
+		dispatch({ type: SEARCH_DISCUSSION });
+		const data = {
+			discussion_id: discussionID,
+			query: query,
+		};
+		socket.emit("search_discussion", data, (res) => {
+			res = JSON.parse(res);
+			dispatch({
+				type: SEARCH_DISCUSSION_FULFILLED,
+				payload: res.blocks,
+			});
+		});
+	};
+};
+
+const tagSearch = (discussionID, query) => {
+	return (dispatch) => {
+		dispatch({ type: SEARCH_DISCUSSION });
+		const data = {
+			discussion_id: discussionID,
+			tags: query,
+		};
+		socket.emit("search_discussion_tags", data, (res) => {
+			res = JSON.parse(res);
+			dispatch({
+				type: SEARCH_DISCUSSION_FULFILLED,
+				payload: res.blocks,
+			});
+		});
+	};
+};
+
 export {
 	joinDiscussion,
 	loadDiscussion,
 	subscribeToDiscussion,
 	addPostToDiscussion,
+	addTagToBlock,
+	removeTagFromBlock,
+	saveBlock,
+	unsaveBlock,
+	blockSearch,
+	tagSearch,
 };

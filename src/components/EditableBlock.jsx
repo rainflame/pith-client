@@ -95,8 +95,10 @@ class EditableBlock extends React.Component {
 			>
 				<BlockSearch
 					onClick={this.addTransclusion}
-					discussionId={this.props.discussionId}
 					focus={this.state.menu}
+					tagSearch={this.props.tagSearch}
+					blockSearch={this.props.blockSearch}
+					searchResults={this.props.searchResults}
 				/>
 			</AbsoluteMenu>
 		) : null;

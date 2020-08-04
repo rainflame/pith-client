@@ -124,6 +124,9 @@ class PostEditor extends React.Component {
                     this.addBlock(index, oldContent, newContent)
                 }
                 onDelete={(oldContent) => this.removeBlock(index, oldContent)}
+                searchResults={this.props.searchResults}
+                tagSearch={this.props.tagSearch}
+                blockSearch={this.props.blockSearch}
             />
         ));
 

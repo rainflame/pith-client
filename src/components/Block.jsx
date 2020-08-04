@@ -1,18 +1,6 @@
 import React from "react";
 import TagEditor from "./TagEditor";
 import AbsoluteMenu from "./AbsoluteMenu";
-import {
-	getBlock,
-	saveBlock,
-	unsaveBlock,
-	addTagToBlock,
-	removeTagFromBlock,
-	listenForTaggedBlock,
-	listenForUntaggedBlock,
-	listenForSavedBlock,
-	listenForUnsavedBlock,
-	addBlockToSummary,
-} from "../api/block";
 
 import "./style/Block.css";
 
@@ -20,58 +8,9 @@ class Block extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			ogId: this.props.id,
-			id: this.props.id,
-			content: this.props.content ? this.props.content : "",
-			tags: this.props.tags ? this.props.tags : [],
 			controls: false,
 			tagEditor: false,
-			transcluded: this.props.transcluded,
 		};
-
-		this.addTagToBlock = this.addTagToBlock.bind(this);
-		this.addToSummary = this.addToSummary.bind(this);
-		this.removeTagFromBlock = this.removeTagFromBlock.bind(this);
-	}
-
-	addToSummary() {
-		const transcludedBlock = `transclude<${this.state.id}>`;
-		addBlockToSummary(
-			{ discussionId: this.props.discussionId, body: transcludedBlock },
-			(data) => {
-				console.log("added block to summary!");
-			}
-		);
-	}
-
-	addTagToBlock(tag) {
-		const cleanedTag = tag.trim();
-		if (cleanedTag !== "" && !(cleanedTag in this.state.tags)) {
-			addTagToBlock(
-				{
-					blockId: this.state.id,
-					tag: cleanedTag,
-					discussionId: this.props.discussionId,
-				},
-				(data) => {
-					console.log("Added tag!");
-				}
-			);
-		}
-		this.setState({ tagEditor: false });
-	}
-
-	removeTagFromBlock(tag) {
-		removeTagFromBlock(
-			{
-				blockId: this.state.id,
-				tag: tag,
-				discussionId: this.props.discussionId,
-			},
-			(data) => {
-				console.log("Removed tag!");
-			}
-		);
 	}
 
 	render() {
@@ -79,21 +18,25 @@ class Block extends React.Component {
 
 		if (!this.props.uneditable) {
 			controls = (
-				<AbsoluteMenu id={this.state.ogId}>
+				<AbsoluteMenu id={this.props.id}>
 					<div
 						className="block-button"
-						onClick={() => this.props.onReply(this.state.content)}
+						onClick={() => this.props.onReply(this.props.content)}
 					>
 						Reply
 					</div>
-					<div className="block-button" onClick={this.addToSummary}>
+					<div className="block-button" onClick={() => {}}>
 						Add to summary
 					</div>
 					<div
 						className="block-button"
-						onClick={this.updateSaveBlock}
+						onClick={
+							this.props.saved
+								? this.props.unsaveBlock
+								: this.props.saveBlock
+						}
 					>
-						{this.state.saved ? "Unsave" : "Save"}
+						{this.props.saved ? "Unsave" : "Save"}
 					</div>
 					<div
 						className="block-button"
@@ -109,28 +52,29 @@ class Block extends React.Component {
 			<div className="block-wrapper">
 				<div
 					className={`block ${
-						this.state.transcluded ? "block-transcluded" : ""
-					} ${this.state.saved ? "block-saved" : ""} ${
+						this.props.transcluded ? "block-transcluded" : ""
+					} ${this.props.saved ? "block-saved" : ""} ${
 						this.props.dark ? "block-dark" : ""
 					}`}
 					style={this.props.style ? this.props.style : {}}
 					onClick={() =>
 						this.props.onClick
-							? this.props.onClick(this.state.content)
+							? this.props.onClick(this.props.content)
 							: {}
 					}
 				>
 					{this.props.content || "Error loading block"}
-					{this.props.showSaved && this.state.saved ? (
+					{this.props.showSaved && this.props.saved ? (
 						<span className="block-saved-label">Saved Block</span>
 					) : null}
 				</div>
 				{controls}
 				<TagEditor
 					visible={this.state.tagEditor}
-					tags={this.state.tags}
-					onAdd={this.addTagToBlock}
-					onRemove={this.removeTagFromBlock}
+					tags={this.props.tags}
+					addTag={this.props.addTag}
+					removeTag={this.props.removeTag}
+					userID={this.props.userID}
 				/>
 			</div>
 		);

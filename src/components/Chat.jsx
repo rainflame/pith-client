@@ -4,11 +4,8 @@ import React from "react";
 import Post from "./Post";
 import Block from "./Block";
 import PostEditor from "./PostEditor";
-import Library from "./Library";
-import AccordionPanel from "./AccordionPanel";
-
-// import { getPosts, listenForCreatedPosts } from "../api/post";
-// import { getSavedBlocks } from "../api/block";
+// import Library from "./Library";
+// import AccordionPanel from "./AccordionPanel";
 
 import "./style/Chat.css";
 
@@ -93,6 +90,7 @@ class Chat extends React.Component {
             const blocks = post.blocks.map((block) => {
                 let blockContent = this.props.blocks[block];
                 let transcluded = false;
+                let newID = block;
 
                 if (blockContent.body.includes("transclude<")) {
                     const id = blockContent.body.substring(
@@ -101,19 +99,25 @@ class Chat extends React.Component {
                     );
 
                     blockContent = this.props.blocks[id];
+                    newID = id;
                     transcluded = true;
                 }
                 return (
                     <Block
                         discussionId={this.state.id}
                         key={block}
-                        id={block}
-                        savedBlocks={this.state.savedBlocks}
+                        id={newID}
                         onReply={(data) => this.createReply(block, data)}
                         content={blockContent ? blockContent.body : null}
                         tags={blockContent ? blockContent.tags : null}
                         transcluded={transcluded}
+                        saved={this.props.savedBlocks.includes(newID)}
                         save
+                        addTag={(tag) => this.props.addTag(newID, tag)}
+                        removeTag={(tag) => this.props.removeTag(newID, tag)}
+                        saveBlock={() => this.props.saveBlock(newID)}
+                        unsaveBlock={() => this.props.unsaveBlock(newID)}
+                        userID={this.props.userID}
                     />
                 );
             });
@@ -132,6 +136,14 @@ class Chat extends React.Component {
                 </Post>
                 //  </CSSTransition>
             );
+        });
+
+        const searchRes = this.props.searchResults.map((block) => {
+            return {
+                id: block,
+                body: this.props.blocks[block].body,
+                tags: this.props.blocks[block].tags,
+            };
         });
 
         let zoomButton = <div />;
@@ -184,6 +196,9 @@ class Chat extends React.Component {
                         onChange={() => this.adjustChatSize(false)}
                         onSubmit={this.props.addPost}
                         transclude={this.state.transclude || null}
+                        searchResults={searchRes}
+                        blockSearch={this.props.blockSearch}
+                        tagSearch={this.props.tagSearch}
                     />
                 </div>
             </div>

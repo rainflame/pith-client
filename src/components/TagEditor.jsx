@@ -1,6 +1,5 @@
 import React from "react";
 
-import { getUserId } from "../api/apiConnection";
 import "./style/TagEditor.css";
 
 class TagEditor extends React.Component {
@@ -33,8 +32,8 @@ class TagEditor extends React.Component {
 
 	handleKeypress(e) {
 		if (e.keyCode === 13) {
-			this.props.onAdd(this.state.value);
-			this.setState({ editing: false, value: "", visible: false });
+			this.props.addTag(this.state.value);
+			this.setState({ editing: false, value: "", visible: true });
 			e.preventDefault();
 		} else if (e.keyCode === 8) {
 			if (this.state.value.length === 0) {
@@ -63,7 +62,7 @@ class TagEditor extends React.Component {
 					onChange={this.handleChange}
 				/>
 			);
-		} else if (Object.keys(this.props.tags).length > 0) {
+		} else if (this.props.tags && Object.keys(this.props.tags).length > 0) {
 			editor = (
 				<div
 					className="tag-button"
@@ -82,10 +81,10 @@ class TagEditor extends React.Component {
 			const newElt = (
 				<div className="tag" key={tag}>
 					{tag}
-					{this.props.tags[tag].owner === getUserId() ? (
+					{this.props.tags[tag].owner === this.props.userID ? (
 						<div
 							className="tag-close"
-							onClick={() => this.props.onRemove(tag)}
+							onClick={() => this.props.removeTag(tag)}
 						>
 							×
 						</div>
@@ -98,7 +97,7 @@ class TagEditor extends React.Component {
 		}
 
 		if (!this.props.visible && tags.length === 0) {
-			return <div></div>;
+			return null;
 		}
 
 		return (

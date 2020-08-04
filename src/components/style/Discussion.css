@@ -8,6 +8,11 @@
 	width: 100%;
 }
 
+.discussion-loading {
+	font-size: 24px;
+	margin: 250px auto;
+	width: 300px;
+}
 .discussion-title-wrapper {
 	padding-left: 10px;
 	width: 100%;

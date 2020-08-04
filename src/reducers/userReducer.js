@@ -1,9 +1,4 @@
-import {
-	CREATE_USER,
-	CREATE_USER_FULFILLED,
-	JOIN_DISCUSSION_FULFILLED,
-	JOIN_DISCUSSION,
-} from "../actions/types";
+import { CREATE_USER, CREATE_USER_FULFILLED } from "../actions/types";
 
 const userReducer = (
 	state = {

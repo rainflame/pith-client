@@ -10,6 +10,7 @@ import {
 	BLOCK_UNTAGGED,
 	POST_CREATED,
 	SUBSCRIBED_TO_DISCUSSION,
+	SEARCH_DISCUSSION_FULFILLED,
 } from "../actions/types";
 
 const discussionReducer = (
@@ -27,6 +28,7 @@ const discussionReducer = (
 		blocks: {},
 		savedBlocks: [],
 		posts: [],
+		searchResults: [],
 	},
 	action
 ) => {
@@ -61,30 +63,45 @@ const discussionReducer = (
 				loadedDiscussion: true,
 				blocks: action.payload.blocks,
 				posts: action.payload.posts,
+				savedBlocks: action.payload.savedBlocks,
 			};
 		}
 		case SUBSCRIBED_TO_DISCUSSION: {
 			return { ...state, subscribed: true };
 		}
 		case BLOCK_SAVED: {
-			const savedBlocks = state.savedBlocks;
+			const savedBlocks = [...state.savedBlocks];
 			savedBlocks.push(action.payload.blockID);
-			return { ...state, savedBlocks: [...savedBlocks] };
+			return { ...state, savedBlocks: savedBlocks };
 		}
 		case BLOCK_UNSAVED: {
-			const savedBlocks = state.savedBlocks;
+			const savedBlocks = [...state.savedBlocks];
 			savedBlocks.splice(savedBlocks.indexOf(action.payload.blockID), 1);
-			return { ...state, savedBlocks: [...savedBlocks] };
+			return { ...state, savedBlocks: savedBlocks };
+		}
+		case BLOCK_TAGGED: {
+			const blocks = { ...state.blocks };
+			blocks[action.payload.blockID].tags[action.payload.tag] = {
+				owner: action.payload.userID,
+			};
+			return { ...state, blocks: blocks };
+		}
+		case BLOCK_UNTAGGED: {
+			const blocks = { ...state.blocks };
+			delete blocks[action.payload.blockID].tags[action.payload.tag];
+			return { ...state, blocks: blocks };
 		}
 		case POST_CREATED: {
-			const posts = state.posts;
+			const posts = [...state.posts];
 			posts.push(action.payload.post);
-
 			return {
 				...state,
-				posts: [...posts],
+				posts: posts,
 				blocks: Object.assign(state.blocks, action.payload.blocks),
 			};
+		}
+		case SEARCH_DISCUSSION_FULFILLED: {
+			return { ...state, searchResults: action.payload };
 		}
 		default: {
 			return { ...state };

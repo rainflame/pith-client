@@ -3,10 +3,9 @@ import { connect } from "react-redux";
 
 import NameEditor from "./NameEditor";
 import Chat from "./Chat";
-import Library from "./Library";
+// import Library from "./Library";
 
-// import { joinDiscussion } from "../api/discussion";
-import { saveValue, getValue } from "../api/local";
+import { getValue } from "../api/local";
 
 import { registerUser } from "../actions/userActions";
 import {
@@ -14,6 +13,12 @@ import {
 	loadDiscussion,
 	subscribeToDiscussion,
 	addPostToDiscussion,
+	addTagToBlock,
+	removeTagFromBlock,
+	saveBlock,
+	unsaveBlock,
+	blockSearch,
+	tagSearch,
 } from "../actions/discussionActions";
 
 import "./style/Discussion.css";
@@ -32,21 +37,33 @@ function mapStateToProps(state) {
 		numLoaded: state.discussion.numLoaded,
 		totalToLoad: state.discussion.totalToLoad,
 		blocks: state.discussion.blocks,
+		savedBlocks: state.discussion.savedBlocks,
 		posts: state.discussion.posts,
+		searchResults: state.discussion.searchResults,
 	};
 }
 
 class Discussion extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {
+			autojoin: true,
+		};
 		this.unpackProps = this.unpackProps.bind(this);
 		this.joinDiscussionWithName = this.joinDiscussionWithName.bind(this);
 		this.addPost = this.addPost.bind(this);
+
+		this.addTag = this.addTag.bind(this);
+		this.removeTag = this.removeTag.bind(this);
+		this.saveBlock = this.saveBlock.bind(this);
+		this.unsaveBlock = this.unsaveBlock.bind(this);
+
+		this.blockSearch = this.blockSearch.bind(this);
+		this.tagSearch = this.tagSearch.bind(this);
 	}
 
 	componentDidMount() {
-		const [params, dispatch] = this.unpackProps();
+		const { dispatch } = this.props;
 		dispatch(registerUser());
 	}
 
@@ -62,18 +79,24 @@ class Discussion extends React.Component {
 				// if it's already been joined, join it again without a name so
 				// we don't have to re-enter a pseudonym
 				this.joinDiscussionWithName(null);
+			} else {
+				this.setState({ autojoin: false });
 			}
 		} else if (
 			this.props.joined &&
 			!this.props.loading &&
 			!this.props.loaded
 		) {
-			dispatch(loadDiscussion(this.props.discussionID));
+			// when we've joined, start loading the discussion
+			dispatch(
+				loadDiscussion(this.props.discussionID, this.props.userID)
+			);
 		} else if (
 			this.props.joined &&
 			this.props.loaded &&
 			!this.props.subscribed
 		) {
+			// once everything is loaded, we can subscribe to new events
 			dispatch(subscribeToDiscussion(this.props.discussionID));
 		}
 	}
@@ -100,8 +123,47 @@ class Discussion extends React.Component {
 		);
 	}
 
+	addTag(blockID, tag) {
+		const [params, dispatch] = this.unpackProps();
+		dispatch(
+			addTagToBlock(params.discussionID, this.props.userID, blockID, tag)
+		);
+	}
+
+	removeTag(blockID, tag) {
+		const [params, dispatch] = this.unpackProps();
+		dispatch(
+			removeTagFromBlock(
+				params.discussionID,
+				this.props.userID,
+				blockID,
+				tag
+			)
+		);
+	}
+
+	saveBlock(blockID) {
+		const [params, dispatch] = this.unpackProps();
+		dispatch(saveBlock(params.discussionID, this.props.userID, blockID));
+	}
+
+	unsaveBlock(blockID) {
+		const [params, dispatch] = this.unpackProps();
+		dispatch(unsaveBlock(params.discussionID, this.props.userID, blockID));
+	}
+
+	blockSearch(query) {
+		const [params, dispatch] = this.unpackProps();
+		dispatch(blockSearch(params.discussionID, query));
+	}
+
+	tagSearch(query) {
+		const [params, dispatch] = this.unpackProps();
+		dispatch(tagSearch(params.discussionID, query));
+	}
+
 	render() {
-		if (this.props.userID && !this.props.joined) {
+		if (this.props.userID && !this.props.joined && !this.state.autojoin) {
 			return (
 				<NameEditor
 					badPseudonym={this.props.badPseudonym}
@@ -110,9 +172,11 @@ class Discussion extends React.Component {
 			);
 		} else if (this.props.joined && this.props.loading) {
 			return (
-				<div>
-					Loading block {this.props.numLoaded}/
-					{this.props.totalToLoad}
+				<div className="discussion-loading">
+					Loading discussion
+					{this.props.totalToLoad > 0
+						? ` (${this.props.numLoaded}/${this.props.totalToLoad})`
+						: "..."}
 				</div>
 			);
 		} else if (this.props.loaded) {
@@ -126,8 +190,17 @@ class Discussion extends React.Component {
 					</div>
 					<Chat
 						blocks={this.props.blocks}
+						savedBlocks={this.props.savedBlocks}
 						posts={[...this.props.posts]}
 						addPost={this.addPost}
+						addTag={this.addTag}
+						removeTag={this.removeTag}
+						saveBlock={this.saveBlock}
+						unsaveBlock={this.unsaveBlock}
+						userID={this.props.userID}
+						tagSearch={this.tagSearch}
+						blockSearch={this.blockSearch}
+						searchResults={this.props.searchResults}
 					/>
 				</div>
 			);

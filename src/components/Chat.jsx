@@ -7,8 +7,8 @@ import PostEditor from "./PostEditor";
 import Library from "./Library";
 import AccordionPanel from "./AccordionPanel";
 
-import { getPosts, listenForCreatedPosts } from "../api/post";
-import { getSavedBlocks } from "../api/block";
+// import { getPosts, listenForCreatedPosts } from "../api/post";
+// import { getSavedBlocks } from "../api/block";
 
 import "./style/Chat.css";
 
@@ -29,25 +29,18 @@ class Chat extends React.Component {
         this.createReply = this.createReply.bind(this);
     }
 
+    // getSnapshotBeforeUpdate(prevProps, prevState) {
+    //     console.log(prevProps.posts.length, this.props.posts.length);
+    //     return null;
+    // }
+
     componentDidMount() {
-        if (this.state.id) {
-            getPosts(this.state.id, (data) => {
-                this.setState({ posts: data }, () => {
-                    this.adjustChatSize(true);
-                });
-            });
+        this.adjustChatSize(true);
+    }
 
-            getSavedBlocks({ discussionId: this.state.id }, (data) => {
-                this.setState({ savedBlocks: data });
-            });
-
-            listenForCreatedPosts((data) => {
-                const posts = this.state.posts;
-                posts.push(data);
-                this.setState({ posts: posts }, () => {
-                    this.adjustChatSize(true);
-                });
-            });
+    componentDidUpdate(prevProps) {
+        if (prevProps.posts.length !== this.props.posts.length) {
+            this.adjustChatSize(true);
         }
     }
 
@@ -96,8 +89,20 @@ class Chat extends React.Component {
     }
 
     render() {
-        const chat = this.state.posts.map((post) => {
+        const chat = this.props.posts.map((post) => {
             const blocks = post.blocks.map((block) => {
+                let blockContent = this.props.blocks[block];
+                let transcluded = false;
+
+                if (blockContent.body.includes("transclude<")) {
+                    const id = blockContent.body.substring(
+                        blockContent.body.lastIndexOf("<") + 1,
+                        blockContent.body.lastIndexOf(">")
+                    );
+
+                    blockContent = this.props.blocks[id];
+                    transcluded = true;
+                }
                 return (
                     <Block
                         discussionId={this.state.id}
@@ -105,8 +110,9 @@ class Chat extends React.Component {
                         id={block}
                         savedBlocks={this.state.savedBlocks}
                         onReply={(data) => this.createReply(block, data)}
-                        // content={block.content}
-                        // tags={block.tags}
+                        content={blockContent ? blockContent.body : null}
+                        tags={blockContent ? blockContent.tags : null}
+                        transcluded={transcluded}
                         save
                     />
                 );
@@ -176,6 +182,7 @@ class Chat extends React.Component {
                             );
                         }}
                         onChange={() => this.adjustChatSize(false)}
+                        onSubmit={this.props.addPost}
                         transclude={this.state.transclude || null}
                     />
                 </div>

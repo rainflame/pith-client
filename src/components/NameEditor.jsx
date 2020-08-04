@@ -22,6 +22,9 @@ class NameEditor extends React.Component {
 	}
 
 	render() {
+		const error = this.props.badPseudonym ? (
+			<div>Whoops! You can't use that nickname.</div>
+		) : null;
 		return (
 			<div className="name-editor-wrapper">
 				<h1>Join Discussion</h1>
@@ -38,6 +41,7 @@ class NameEditor extends React.Component {
 				<button onClick={() => this.props.onSubmit(this.state.value)}>
 					Join Discussion
 				</button>
+				{error}
 			</div>
 		);
 	}

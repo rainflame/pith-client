@@ -1,73 +1,140 @@
 import React from "react";
+import { connect } from "react-redux";
 
 import NameEditor from "./NameEditor";
 import Chat from "./Chat";
 import Library from "./Library";
 
-import { joinDiscussion } from "../api/discussion";
+// import { joinDiscussion } from "../api/discussion";
 import { saveValue, getValue } from "../api/local";
 
+import { registerUser } from "../actions/userActions";
+import {
+	joinDiscussion,
+	loadDiscussion,
+	subscribeToDiscussion,
+	addPostToDiscussion,
+} from "../actions/discussionActions";
+
 import "./style/Discussion.css";
+
+function mapStateToProps(state) {
+	return {
+		userID: state.user.id,
+		discussionID: state.discussion.id,
+		loading: state.discussion.loadingDiscussion,
+		loaded: state.discussion.loadedDiscussion,
+		joined: state.discussion.joinedDiscussion,
+		disussionTitle: state.discussion.title,
+		discussionTheme: state.discussion.theme,
+		subscribed: state.discussion.subscribed,
+		badPseudonym: state.errors.discussion.badPseudonym,
+		numLoaded: state.discussion.numLoaded,
+		totalToLoad: state.discussion.totalToLoad,
+		blocks: state.discussion.blocks,
+		posts: state.discussion.posts,
+	};
+}
 
 class Discussion extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			chooseName: true,
-		};
-		this.joinDiscussion = this.joinDiscussion.bind(this);
+		this.state = {};
+		this.unpackProps = this.unpackProps.bind(this);
+		this.joinDiscussionWithName = this.joinDiscussionWithName.bind(this);
+		this.addPost = this.addPost.bind(this);
 	}
 
 	componentDidMount() {
-		const {
-			match: { params },
-		} = this.props;
-
-		this.setState({ id: params.discussionId }, () => {
-			// try to retrieve the discussion id from localstorage (indicating we've
-			// already joined it previously and don't need to make a new name)
-			const name = getValue(params.discussionId);
-			if (name !== null) {
-				this.joinDiscussion(name);
-			}
-		});
+		const [params, dispatch] = this.unpackProps();
+		dispatch(registerUser());
 	}
 
-	joinDiscussion(name) {
-		this.setState({ chooseName: false }, () => {
-			joinDiscussion(
-				{ discussionId: this.state.id, name: name },
-				(data) => {
-					console.log(data);
-					console.log("joined discussion!");
-					this.setState({ title: data.title, theme: data.theme });
+	componentDidUpdate() {
+		const [params, dispatch] = this.unpackProps();
+		if (this.props.userID && !this.props.joined) {
+			// check if the discussion has been marked as joined in localstorage
+			let discussions = getValue("joinedDiscussions");
+			if (
+				discussions !== null &&
+				discussions.includes(params.discussionID)
+			) {
+				// if it's already been joined, join it again without a name so
+				// we don't have to re-enter a pseudonym
+				this.joinDiscussionWithName(null);
+			}
+		} else if (
+			this.props.joined &&
+			!this.props.loading &&
+			!this.props.loaded
+		) {
+			dispatch(loadDiscussion(this.props.discussionID));
+		} else if (
+			this.props.joined &&
+			this.props.loaded &&
+			!this.props.subscribed
+		) {
+			dispatch(subscribeToDiscussion(this.props.discussionID));
+		}
+	}
 
-					// save the discussion id in localstorage to indicate that we've
-					// already joined it once
-					saveValue(this.state.id, name);
-				}
-			);
-		});
+	unpackProps() {
+		const {
+			match: { params },
+			dispatch,
+		} = this.props;
+		return [params, dispatch];
+	}
+
+	joinDiscussionWithName(pseudonym) {
+		const [params, dispatch] = this.unpackProps();
+		dispatch(
+			joinDiscussion(params.discussionID, this.props.userID, pseudonym)
+		);
+	}
+
+	addPost(blocks) {
+		const [params, dispatch] = this.unpackProps();
+		dispatch(
+			addPostToDiscussion(params.discussionID, this.props.userID, blocks)
+		);
 	}
 
 	render() {
-		if (this.state.chooseName) {
-			return <NameEditor onSubmit={this.joinDiscussion} />;
-		} else if (this.state.title) {
+		if (this.props.userID && !this.props.joined) {
+			return (
+				<NameEditor
+					badPseudonym={this.props.badPseudonym}
+					onSubmit={this.joinDiscussionWithName}
+				/>
+			);
+		} else if (this.props.joined && this.props.loading) {
+			return (
+				<div>
+					Loading block {this.props.numLoaded}/
+					{this.props.totalToLoad}
+				</div>
+			);
+		} else if (this.props.loaded) {
 			return (
 				<div className="discussion-wrapper">
 					<div className="discussion-title-wrapper">
-						<h1>{this.state.title}</h1>
+						<h1>{this.props.disussionTitle}</h1>
 						<div className="discussion-theme">
-							{this.state.theme}
+							{this.props.discussionTheme}
 						</div>
 					</div>
-					<Chat id={this.state.id} />
+					<Chat
+						blocks={this.props.blocks}
+						posts={[...this.props.posts]}
+						addPost={this.addPost}
+					/>
 				</div>
 			);
+		} else {
+			return null;
 		}
-		return <div></div>;
 	}
 }
 
-export default Discussion;
+export default connect(mapStateToProps)(Discussion);

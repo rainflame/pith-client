@@ -12,10 +12,10 @@ function App() {
 				<Switch>
 					<Route
 						exact
-						path="/b/:boardId/d/:discussionId"
+						path="/b/:boardID/d/:discussionID"
 						component={Discussion}
 					/>
-					<Route exact path="/b/:boardId" component={Board} />
+					<Route exact path="/b/:boardID" component={Board} />
 				</Switch>
 			</Router>
 		</div>

@@ -29,104 +29,9 @@ class Block extends React.Component {
 			transcluded: this.props.transcluded,
 		};
 
-		this.updateSaveBlock = this.updateSaveBlock.bind(this);
 		this.addTagToBlock = this.addTagToBlock.bind(this);
 		this.addToSummary = this.addToSummary.bind(this);
 		this.removeTagFromBlock = this.removeTagFromBlock.bind(this);
-		this.getBlockContent = this.getBlockContent.bind(this);
-	}
-
-	componentDidMount() {
-		this.getBlockContent();
-	}
-
-	componentDidUpdate() {
-		if (this.props.id !== this.state.ogId) {
-			this.setState({ ogId: this.props.id, id: this.props.id }, () => {
-				this.getBlockContent();
-			});
-		}
-	}
-
-	getBlockContent() {
-		getBlock(
-			{ blockId: this.state.id, discussionId: this.props.discussionId },
-			(data) => {
-				if (data !== null) {
-					if (data.body.includes("transclude<")) {
-						const id = data.body.substring(
-							data.body.lastIndexOf("<") + 1,
-							data.body.lastIndexOf(">")
-						);
-						this.setState({ id: id, transcluded: true }, () => {
-							this.getBlockContent(id);
-						});
-					} else {
-						this.setState({
-							content: data.body,
-							tags: data.tags,
-							saved: this.props.savedBlocks
-								? this.props.savedBlocks.includes(data.block_id)
-								: false,
-						});
-						// unsure if it's a good idea to have this listener in each of the block
-						// components, but it works for now
-
-						listenForTaggedBlock((data) => {
-							if (data.block_id === this.state.id) {
-								const tags = this.state.tags;
-								tags[data.tag] = { owner: data.user_id };
-								this.setState({ tags: tags });
-							}
-						});
-
-						listenForUntaggedBlock((data) => {
-							if (data.block_id === this.state.id) {
-								const tags = this.state.tags;
-								delete tags[data.tag];
-								this.setState({ tags: tags });
-							}
-						});
-						listenForSavedBlock((data) => {
-							if (data.block_id === this.state.id) {
-								this.setState({ saved: true });
-							}
-						});
-						listenForUnsavedBlock((data) => {
-							if (data.block_id === this.state.id) {
-								this.setState({ saved: false });
-							}
-						});
-					}
-				} else {
-					this.setState({ content: "Error loading block" });
-				}
-			}
-		);
-	}
-
-	updateSaveBlock(e) {
-		if (this.state.saved) {
-			unsaveBlock(
-				{
-					blockId: this.state.id,
-					discussionId: this.props.discussionId,
-				},
-				(data) => {
-					console.log("Block unsaved!");
-				}
-			);
-		} else {
-			saveBlock(
-				{
-					blockId: this.state.id,
-					discussionId: this.props.discussionId,
-				},
-				(data) => {
-					console.log("Block saved!");
-				}
-			);
-		}
 	}
 
 	addToSummary() {
@@ -215,11 +120,7 @@ class Block extends React.Component {
 							: {}
 					}
 				>
-					{this.state.content !== "" ? (
-						this.state.content
-					) : (
-						<div className="loader" />
-					)}
+					{this.props.content || "Error loading block"}
 					{this.props.showSaved && this.state.saved ? (
 						<span className="block-saved-label">Saved Block</span>
 					) : null}

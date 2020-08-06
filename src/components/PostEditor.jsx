@@ -25,8 +25,10 @@ class PostEditor extends React.Component {
         this.onClose = this.onClose.bind(this);
     }
 
-    componentDidUpdate() {
-        this.props.onChange();
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.blocks !== prevState.blocks) {
+            this.props.onChange();
+        }
         this.checkForTransclusion();
     }
 
@@ -83,13 +85,13 @@ class PostEditor extends React.Component {
     }
 
     updateBlock(index, value) {
-        const blocks = this.state.blocks;
+        const blocks = [...this.state.blocks];
         blocks[index] = value;
         this.setState({ blocks: blocks, focusIndex: index });
     }
 
     addBlock(index, oldContent, newContent) {
-        const blocks = this.state.blocks;
+        const blocks = [...this.state.blocks];
         blocks[index] = oldContent;
         // add in the new content after the old index
         blocks.splice(index + 1, 0, newContent);
@@ -97,7 +99,7 @@ class PostEditor extends React.Component {
     }
 
     removeBlock(index, oldContent) {
-        const blocks = this.state.blocks;
+        const blocks = [...this.state.blocks];
         if (blocks.length > 1) {
             // if there was content on the current line, add it to the previous one
             if (oldContent) {

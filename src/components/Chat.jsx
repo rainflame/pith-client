@@ -14,25 +14,18 @@ class Chat extends React.Component {
         super(props);
         this.state = {
             editing: false,
-            posts: [],
-            savedBlocks: [],
             scrolled: 100,
             missedPosts: 0,
-            id: this.props.id,
         };
 
+        this.chatContentRef = React.createRef();
         this.adjustChatSize = this.adjustChatSize.bind(this);
         this.recordScrollPercent = this.recordScrollPercent.bind(this);
         this.createReply = this.createReply.bind(this);
     }
 
-    // getSnapshotBeforeUpdate(prevProps, prevState) {
-    //     console.log(prevProps.posts.length, this.props.posts.length);
-    //     return null;
-    // }
-
     componentDidMount() {
-        this.adjustChatSize(true);
+        this.adjustChatSize();
     }
 
     componentDidUpdate(prevProps) {
@@ -41,29 +34,14 @@ class Chat extends React.Component {
         }
     }
 
-    adjustChatSize(checkScrollPosition, ignoreNewPosts) {
-        // this is kind of a stupid way of shrinking the chat content
-        const editor = document.getElementsByClassName("post-editor")[0];
-        const wrapperHeight = document.getElementsByClassName("chat-wrapper")[0]
-            .clientHeight;
-        const overflow = document.getElementsByClassName(
-            "chat-overflow-wrapper"
-        )[0];
-        if (editor) {
-            overflow.style.height = `${wrapperHeight - editor.clientHeight}px`;
-        } else {
-            overflow.style.height = `${wrapperHeight}px`;
-        }
-
-        if (checkScrollPosition) {
-            if (this.state.scrolled >= 100) {
-                overflow.scrollTop = overflow.scrollHeight;
-                if (this.state.missedPosts > 0) {
-                    this.setState({ missedPosts: 0 });
-                }
-            } else if (!ignoreNewPosts) {
-                this.setState({ missedPosts: this.state.missedPosts + 1 });
+    adjustChatSize(newPost = false) {
+        if (this.state.scrolled >= 98 && this.chatContentRef) {
+            this.chatContentRef.current.scrollTop = this.chatContentRef.current.scrollHeight;
+            if (this.state.missedPosts > 0) {
+                this.setState({ missedPosts: 0 });
             }
+        } else if (newPost) {
+            this.setState({ missedPosts: this.state.missedPosts + 1 });
         }
     }
 
@@ -71,7 +49,7 @@ class Chat extends React.Component {
         const elt = e.target;
         const percentScrolled =
             (100 * elt.scrollTop) / (elt.scrollHeight - elt.clientHeight);
-        if (percentScrolled === 100) {
+        if (percentScrolled >= 98) {
             this.setState({ scrolled: percentScrolled, missedPosts: 0 });
         } else {
             this.setState({ scrolled: percentScrolled });
@@ -153,7 +131,7 @@ class Chat extends React.Component {
                     className="chat-zoom"
                     onClick={() => {
                         this.setState({ scrolled: 100 }, () => {
-                            this.adjustChatSize(true);
+                            this.adjustChatSize();
                         });
                     }}
                 >
@@ -165,35 +143,38 @@ class Chat extends React.Component {
 
         return (
             <div className="chat-container">
-                <h2>Discussion</h2>
-                <div className="chat-wrapper">
-                    <div
-                        className="chat-overflow-wrapper"
-                        onScroll={this.recordScrollPercent}
-                    >
-                        <div className="chat">
-                            {/*<TransitionGroup>{discussion}</TransitionGroup>*/}
-                            {chat}
-                        </div>
+                <div className="chat-header">
+                    <h2>Chat</h2>
+                </div>
+                <div
+                    className="chat-overflow-wrapper"
+                    onScroll={this.recordScrollPercent}
+                    ref={this.chatContentRef}
+                >
+                    <div className="chat">
+                        {/*<TransitionGroup>{discussion}</TransitionGroup>*/}
+                        {chat}
                     </div>
+                </div>
+                <div className="chat-footer">
                     {zoomButton}
                     <PostEditor
                         editing={this.state.editing}
                         discussionId={this.state.id}
                         onOpen={() => {
                             this.setState({ editing: true }, () => {
-                                this.adjustChatSize(true, true);
+                                this.adjustChatSize();
                             });
                         }}
                         onClose={() => {
                             this.setState(
                                 { editing: false, transclude: null },
                                 () => {
-                                    this.adjustChatSize(true);
+                                    this.adjustChatSize();
                                 }
                             );
                         }}
-                        onChange={() => this.adjustChatSize(false)}
+                        onChange={() => this.adjustChatSize()}
                         onSubmit={this.props.addPost}
                         transclude={this.state.transclude || null}
                         searchResults={searchRes}

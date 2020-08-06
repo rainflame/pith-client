@@ -13,25 +13,24 @@ import {
 	SEARCH_DISCUSSION_FULFILLED,
 } from "../actions/types";
 
-const discussionReducer = (
-	state = {
-		id: null,
-		joiningDiscussion: false,
-		joinedDiscussion: false,
-		loadingDiscussion: false,
-		loadedDiscussion: false,
-		subscribed: false,
-		totalToLoad: 0,
-		numLoaded: 0,
-		theme: "",
-		title: "",
-		blocks: {},
-		savedBlocks: [],
-		posts: [],
-		searchResults: [],
-	},
-	action
-) => {
+const defaultState = {
+	id: null,
+	joiningDiscussion: false,
+	joinedDiscussion: false,
+	loadingDiscussion: false,
+	loadedDiscussion: false,
+	subscribed: false,
+	totalToLoad: 0,
+	numLoaded: 0,
+	theme: "",
+	title: "",
+	blocks: {},
+	savedBlocks: [],
+	posts: [],
+	searchResults: [],
+};
+
+const discussionReducer = (state = defaultState, action) => {
 	switch (action.type) {
 		case JOIN_DISCUSSION: {
 			return { ...state, joiningDiscussion: true };

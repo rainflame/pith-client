@@ -70,10 +70,14 @@ class Block extends React.Component {
 				</div>
 				{controls}
 				<TagEditor
+					blockID={this.props.id}
 					visible={this.state.tagEditor}
 					tags={this.props.tags}
 					addTag={this.props.addTag}
 					removeTag={this.props.removeTag}
+					onClose={() => {
+						this.setState({ tagEditor: false });
+					}}
 					userID={this.props.userID}
 				/>
 			</div>

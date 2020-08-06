@@ -23,7 +23,7 @@ class Board extends React.Component {
 		const {
 			match: { params },
 		} = this.props;
-		this.setState({ id: params.boardId });
+		this.setState({ id: params.boardID });
 
 		getDiscussions((data) => {
 			this.setState({ discussions: data });

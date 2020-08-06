@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import NameEditor from "./NameEditor";
 import Chat from "./Chat";
+import Summary from "./Summary";
 // import Library from "./Library";
 
 import { getValue } from "../api/local";
@@ -182,12 +183,7 @@ class Discussion extends React.Component {
 		} else if (this.props.loaded) {
 			return (
 				<div className="discussion-wrapper">
-					<div className="discussion-title-wrapper">
-						<h1>{this.props.disussionTitle}</h1>
-						<div className="discussion-theme">
-							{this.props.discussionTheme}
-						</div>
-					</div>
+					<Summary />
 					<Chat
 						blocks={this.props.blocks}
 						savedBlocks={this.props.savedBlocks}
@@ -211,3 +207,10 @@ class Discussion extends React.Component {
 }
 
 export default connect(mapStateToProps)(Discussion);
+
+// <div className="discussion-title-wrapper">
+// 						<h1>{this.props.disussionTitle}</h1>
+// 						<div className="discussion-theme">
+// 							{this.props.discussionTheme}
+// 						</div>
+// 					</div>

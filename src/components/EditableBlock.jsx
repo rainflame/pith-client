@@ -86,7 +86,7 @@ class EditableBlock extends React.Component {
 		const menu = this.props.last ? (
 			<AbsoluteMenu
 				id="search"
-				position="left"
+				position="top"
 				icon={search}
 				iconClass="search-icon"
 				alwaysOn

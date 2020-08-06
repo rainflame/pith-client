@@ -1,6 +1,5 @@
 import React from "react";
 
-import { getUserId } from "../api/apiConnection";
 import "./style/TagEditor.css";
 
 class TagEditor extends React.Component {
@@ -8,6 +7,8 @@ class TagEditor extends React.Component {
 		super(props);
 		this.state = {
 			visible: this.props.visible,
+			tempAdd: null,
+			tempRemove: null,
 			value: "",
 			editing: false,
 		};
@@ -29,16 +30,41 @@ class TagEditor extends React.Component {
 				this.checkFocus();
 			});
 		}
+
+		// if the new list of tags includes the temporary tag, remove it
+		if (
+			this.state.tempAdd &&
+			Object.keys(this.props.tags).includes(this.state.tempAdd)
+		) {
+			this.setState({ tempAdd: null });
+		}
+
+		if (
+			this.state.tempRemove &&
+			!Object.keys(this.props.tags).includes(this.state.tempRemove)
+		) {
+			this.setState({ tempRemove: null });
+		}
 	}
 
 	handleKeypress(e) {
 		if (e.keyCode === 13) {
-			this.props.onAdd(this.state.value);
-			this.setState({ editing: false, value: "", visible: false });
-			e.preventDefault();
+			if (!Object.keys(this.props.tags).includes(this.state.value)) {
+				this.props.addTag(this.state.value);
+				this.setState({
+					editing: false,
+					value: "",
+					tempAdd: this.state.value,
+					visible: true,
+				});
+				e.preventDefault();
+			} else {
+				this.setState({ editing: false, value: "" });
+			}
 		} else if (e.keyCode === 8) {
 			if (this.state.value.length === 0) {
-				this.setState({ editing: false });
+				this.setState({ editing: false, visible: false });
+				this.props.onClose();
 			}
 		}
 	}
@@ -63,7 +89,7 @@ class TagEditor extends React.Component {
 					onChange={this.handleChange}
 				/>
 			);
-		} else if (Object.keys(this.props.tags).length > 0) {
+		} else if (this.props.tags && Object.keys(this.props.tags).length > 0) {
 			editor = (
 				<div
 					className="tag-button"
@@ -79,26 +105,43 @@ class TagEditor extends React.Component {
 		}
 		const tags = [];
 		for (const tag in this.props.tags) {
-			const newElt = (
-				<div className="tag" key={tag}>
-					{tag}
-					{this.props.tags[tag].owner === getUserId() ? (
-						<div
-							className="tag-close"
-							onClick={() => this.props.onRemove(tag)}
-						>
-							×
-						</div>
-					) : (
-						<div></div>
-					)}
+			if (tag !== this.state.tempRemove) {
+				const newElt = (
+					<div className="tag" key={this.props.blockID + tag}>
+						{tag}
+						{this.props.tags[tag].owner === this.props.userID ? (
+							<div
+								className="tag-close"
+								onClick={() => {
+									this.props.removeTag(tag);
+									this.setState({ tempRemove: tag });
+								}}
+							>
+								×
+							</div>
+						) : (
+							<div></div>
+						)}
+					</div>
+				);
+				tags.push(newElt);
+			}
+		}
+
+		// add the temporary tag to the list of tags while it's loading
+		if (this.state.tempAdd) {
+			tags.push(
+				<div
+					className="tag"
+					key={this.props.blockID + this.state.tempAdd + "temp"}
+				>
+					{this.state.tempAdd}
 				</div>
 			);
-			tags.push(newElt);
 		}
 
 		if (!this.props.visible && tags.length === 0) {
-			return <div></div>;
+			return null;
 		}
 
 		return (

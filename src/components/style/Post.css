@@ -7,8 +7,9 @@
 }
 
 .post-height-limited {
-	max-height: 75vh;
+	max-height: 50vh;
 	overflow: auto;
+	margin-bottom: 0;
 }
 
 .post-title {

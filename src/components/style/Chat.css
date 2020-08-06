@@ -1,20 +1,32 @@
 .chat-container {
     max-width: var(--column-width);
     width: 100%;
+    margin: 0 10px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100vh;
+    max-height: 1400px;
+}
+
+.chat-header {
+    border-bottom: 3px solid #313131;
+}
+
+.chat-footer {
+    position: relative;
+    border-top: 3px solid #313131;
+}
+
+.chat-overflow-wrapper {
+    height: 100%;
+    overflow-y: auto;
 }
 
 .chat-wrapper {
     height: calc(85vh - (var(--column-padding) * 2));
     max-height: 1200px;
-    /*padding: 10px;*/
     width: 100%;
     position: relative;
-}
-
-.chat-overflow-wrapper {
-    height: 100%;
-    /*max-height: 80%;*/
-    overflow-y: auto;
 }
 
 .chat {
@@ -23,13 +35,15 @@
     align-items: flex-end;
     flex-wrap: wrap;
     align-content: flex-end;
+    margin-bottom: 25px;
 }
 
 .chat-zoom {
     cursor: pointer;
     padding: 10px;
     position: absolute;
-    right: 20px;
+    right: 0;
+    top: 15px;
     background-color: #101010;
     z-index: 1000;
 }

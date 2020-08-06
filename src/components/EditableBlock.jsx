@@ -86,7 +86,7 @@ class EditableBlock extends React.Component {
 		const menu = this.props.last ? (
 			<AbsoluteMenu
 				id="search"
-				position="left"
+				position="top"
 				icon={search}
 				iconClass="search-icon"
 				alwaysOn
@@ -95,8 +95,10 @@ class EditableBlock extends React.Component {
 			>
 				<BlockSearch
 					onClick={this.addTransclusion}
-					discussionId={this.props.discussionId}
 					focus={this.state.menu}
+					tagSearch={this.props.tagSearch}
+					blockSearch={this.props.blockSearch}
+					searchResults={this.props.searchResults}
 				/>
 			</AbsoluteMenu>
 		) : null;

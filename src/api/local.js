@@ -2,6 +2,10 @@ function saveValue(val, data) {
 	localStorage.setItem(val, JSON.stringify(data));
 }
 
+function setValue(val, data) {
+	localStorage.setItem(val, JSON.stringify(data));
+}
+
 function getValue(val) {
 	const res = localStorage.getItem(val);
 
@@ -10,4 +14,4 @@ function getValue(val) {
 	return null;
 }
 
-export { saveValue, getValue };
+export { saveValue, setValue, getValue };

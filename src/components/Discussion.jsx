@@ -8,10 +8,11 @@ import Summary from "./Summary";
 
 import { getValue } from "../api/local";
 
-import { registerUser } from "../actions/userActions";
+import { registerUser, clearUser } from "../actions/userActions";
 import {
 	joinDiscussion,
 	loadDiscussion,
+	clearDiscussion,
 	subscribeToDiscussion,
 	addPostToDiscussion,
 	addTagToBlock,
@@ -24,8 +25,9 @@ import {
 
 import "./style/Discussion.css";
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
 	return {
+		paramDiscussionID: ownProps.match.params.discussionID,
 		userID: state.user.id,
 		discussionID: state.discussion.id,
 		loading: state.discussion.loadingDiscussion,
@@ -50,7 +52,7 @@ class Discussion extends React.Component {
 		this.state = {
 			autojoin: true,
 		};
-		this.unpackProps = this.unpackProps.bind(this);
+
 		this.joinDiscussionWithName = this.joinDiscussionWithName.bind(this);
 		this.addPost = this.addPost.bind(this);
 
@@ -69,13 +71,13 @@ class Discussion extends React.Component {
 	}
 
 	componentDidUpdate() {
-		const [params, dispatch] = this.unpackProps();
+		const { dispatch } = this.props;
 		if (this.props.userID && !this.props.joined) {
 			// check if the discussion has been marked as joined in localstorage
 			let discussions = getValue("joinedDiscussions");
 			if (
 				discussions !== null &&
-				discussions.includes(params.discussionID)
+				discussions.includes(this.props.paramDiscussionID)
 			) {
 				// if it's already been joined, join it again without a name so
 				// we don't have to re-enter a pseudonym
@@ -102,40 +104,51 @@ class Discussion extends React.Component {
 		}
 	}
 
-	unpackProps() {
-		const {
-			match: { params },
-			dispatch,
-		} = this.props;
-		return [params, dispatch];
+	componentWillUnmount() {
+		const { dispatch } = this.props;
+		dispatch(clearUser());
+		dispatch(clearDiscussion());
 	}
 
 	joinDiscussionWithName(pseudonym) {
-		const [params, dispatch] = this.unpackProps();
+		const { dispatch } = this.props;
 		dispatch(
-			joinDiscussion(params.discussionID, this.props.userID, pseudonym)
+			joinDiscussion(
+				this.props.paramDiscussionID,
+				this.props.userID,
+				pseudonym
+			)
 		);
 	}
 
 	addPost(blocks) {
-		const [params, dispatch] = this.unpackProps();
+		const { dispatch } = this.props;
 		dispatch(
-			addPostToDiscussion(params.discussionID, this.props.userID, blocks)
+			addPostToDiscussion(
+				this.props.discussionID,
+				this.props.userID,
+				blocks
+			)
 		);
 	}
 
 	addTag(blockID, tag) {
-		const [params, dispatch] = this.unpackProps();
+		const { dispatch } = this.props;
 		dispatch(
-			addTagToBlock(params.discussionID, this.props.userID, blockID, tag)
+			addTagToBlock(
+				this.props.discussionID,
+				this.props.userID,
+				blockID,
+				tag
+			)
 		);
 	}
 
 	removeTag(blockID, tag) {
-		const [params, dispatch] = this.unpackProps();
+		const { dispatch } = this.props;
 		dispatch(
 			removeTagFromBlock(
-				params.discussionID,
+				this.props.discussionID,
 				this.props.userID,
 				blockID,
 				tag
@@ -144,23 +157,27 @@ class Discussion extends React.Component {
 	}
 
 	saveBlock(blockID) {
-		const [params, dispatch] = this.unpackProps();
-		dispatch(saveBlock(params.discussionID, this.props.userID, blockID));
+		const { dispatch } = this.props;
+		dispatch(
+			saveBlock(this.props.discussionID, this.props.userID, blockID)
+		);
 	}
 
 	unsaveBlock(blockID) {
-		const [params, dispatch] = this.unpackProps();
-		dispatch(unsaveBlock(params.discussionID, this.props.userID, blockID));
+		const { dispatch } = this.props;
+		dispatch(
+			unsaveBlock(this.props.discussionID, this.props.userID, blockID)
+		);
 	}
 
 	blockSearch(query) {
-		const [params, dispatch] = this.unpackProps();
-		dispatch(blockSearch(params.discussionID, query));
+		const { dispatch } = this.props;
+		dispatch(blockSearch(this.props.discussionID, query));
 	}
 
 	tagSearch(query) {
-		const [params, dispatch] = this.unpackProps();
-		dispatch(tagSearch(params.discussionID, query));
+		const { dispatch } = this.props;
+		dispatch(tagSearch(this.props.discussionID, query));
 	}
 
 	render() {

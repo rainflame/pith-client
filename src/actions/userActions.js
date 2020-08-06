@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { socket } from "./socket";
 import { getValue, setValue } from "../api/local";
 
-import { CREATE_USER, CREATE_USER_FULFILLED } from "./types";
+import { CREATE_USER, CREATE_USER_FULFILLED, CLEAR_USER } from "./types";
 
 const registerUser = () => {
 	// try and get the session ID from localstorage. We're using this to persist a
@@ -24,4 +24,10 @@ const registerUser = () => {
 	};
 };
 
-export { registerUser };
+const clearUser = () => {
+	return (dispatch) => {
+		dispatch({ type: CLEAR_USER });
+	};
+};
+
+export { registerUser, clearUser };

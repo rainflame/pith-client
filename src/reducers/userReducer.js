@@ -1,13 +1,15 @@
-import { CREATE_USER, CREATE_USER_FULFILLED } from "../actions/types";
+import {
+	CREATE_USER,
+	CREATE_USER_FULFILLED,
+	CLEAR_USER,
+} from "../actions/types";
 
-const userReducer = (
-	state = {
-		id: null,
-		connecting: false,
-		connected: false,
-	},
-	action
-) => {
+const defaultState = {
+	id: null,
+	connecting: false,
+	connected: false,
+};
+const userReducer = (state = defaultState, action) => {
 	switch (action.type) {
 		case CREATE_USER: {
 			return { ...state, connecting: true };
@@ -19,6 +21,9 @@ const userReducer = (
 				connected: true,
 				id: action.payload,
 			};
+		}
+		case CLEAR_USER: {
+			return { ...defaultState };
 		}
 		default: {
 			return { ...state };

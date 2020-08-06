@@ -6,6 +6,7 @@ import {
 	JOIN_DISCUSSION_FULFILLED,
 	LOAD_DISCUSSION_PROGRESS,
 	LOAD_DISCUSSION_FULFILLED,
+	CLEAR_DISCUSSION,
 	ERROR_BAD_PSEUDONYM,
 	LOAD_DISCUSSION,
 	BLOCK_SAVED,
@@ -59,6 +60,12 @@ const joinDiscussion = (discussionID, userID, pseudonym) => {
 				});
 			}
 		});
+	};
+};
+
+const clearDiscussion = () => {
+	return (dispatch) => {
+		dispatch({ type: CLEAR_DISCUSSION });
 	};
 };
 
@@ -323,6 +330,7 @@ const tagSearch = (discussionID, query) => {
 export {
 	joinDiscussion,
 	loadDiscussion,
+	clearDiscussion,
 	subscribeToDiscussion,
 	addPostToDiscussion,
 	addTagToBlock,

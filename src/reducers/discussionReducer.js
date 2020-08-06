@@ -4,6 +4,7 @@ import {
 	LOAD_DISCUSSION,
 	LOAD_DISCUSSION_FULFILLED,
 	LOAD_DISCUSSION_PROGRESS,
+	CLEAR_DISCUSSION,
 	BLOCK_SAVED,
 	BLOCK_UNSAVED,
 	BLOCK_TAGGED,
@@ -64,6 +65,9 @@ const discussionReducer = (state = defaultState, action) => {
 				posts: action.payload.posts,
 				savedBlocks: action.payload.savedBlocks,
 			};
+		}
+		case CLEAR_DISCUSSION: {
+			return { ...state, ...defaultState };
 		}
 		case SUBSCRIBED_TO_DISCUSSION: {
 			return { ...state, subscribed: true };

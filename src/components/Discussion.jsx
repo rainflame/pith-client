@@ -82,7 +82,7 @@ class Discussion extends React.Component {
 				// if it's already been joined, join it again without a name so
 				// we don't have to re-enter a pseudonym
 				this.joinDiscussionWithName(null);
-			} else {
+			} else if (this.state.autojoin) {
 				this.setState({ autojoin: false });
 			}
 		} else if (

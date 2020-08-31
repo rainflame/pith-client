@@ -12,6 +12,11 @@ Install the dependencies:
 npm install
 ```
 
+Create a `.env` file. Set an environent variable called `REACT_APP_API` that points to the running backend. For instance:
+```
+REACT_APP_API=https://localhost:8000
+```
+
 Run the development server:
 
 ```

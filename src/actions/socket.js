@@ -1,4 +1,5 @@
-import openSocket from "socket.io-client";
-const socket = openSocket(process.env.REACT_APP_API);
+import io from "socket.io-client";
+
+const socket = io(process.env.REACT_APP_API + "/discussion");
 
 export { socket };

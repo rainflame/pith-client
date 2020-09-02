@@ -30,7 +30,7 @@ const joinDiscussion = (discussionID, userID, pseudonym) => {
 	};
 	return (dispatch) => {
 		dispatch({ type: JOIN_DISCUSSION });
-		socket.emit("join_discussion", data, (res) => {
+		socket.emit("join", data, (res) => {
 			try {
 				res = JSON.parse(res);
 				dispatch({
@@ -300,7 +300,7 @@ const blockSearch = (discussionID, query) => {
 			discussion_id: discussionID,
 			query: query,
 		};
-		socket.emit("search_discussion", data, (res) => {
+		socket.emit("search_basic", data, (res) => {
 			res = JSON.parse(res);
 			dispatch({
 				type: SEARCH_DISCUSSION_FULFILLED,
@@ -317,7 +317,7 @@ const tagSearch = (discussionID, query) => {
 			discussion_id: discussionID,
 			tags: query,
 		};
-		socket.emit("search_discussion_tags", data, (res) => {
+		socket.emit("search_tags", data, (res) => {
 			res = JSON.parse(res);
 			dispatch({
 				type: SEARCH_DISCUSSION_FULFILLED,

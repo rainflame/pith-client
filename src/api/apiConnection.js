@@ -1,9 +1,9 @@
-import openSocket from "socket.io-client";
+import io from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 
 import { getValue, saveValue } from "./local";
 
-const socket = openSocket(process.env.REACT_APP_API);
+const socket = io(process.env.REACT_APP_API);
 
 // the number of ms we wait before checking if we've received a respnse from the
 // last request and can proceed to make a new one
@@ -89,7 +89,7 @@ function connectAndCreateUser() {
 				// save the user id so we can use it later when creating posts etc
 				saveValue("id", payload.user_id);
 				waitingForCreateUser = false;
-				//console.log("Server connected");
+				console.log("Server connected");
 				// now we're connected and can make the next request
 				nextEvent();
 			});
@@ -147,7 +147,7 @@ const getter = (eventName, payload, addAuth, func) => {
 				socket.emit(eventName, (data) => {
 					//console.log(`Completed "${eventName}" (request ${id})`);
 					nextEvent();
-					func(JSON.parse(data));
+					if (data) func(JSON.parse(data));
 				});
 			},
 			id,

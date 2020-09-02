@@ -2,16 +2,16 @@ import { listener, getter, setter } from "./apiConnection";
 
 // discussion stuff
 const getDiscussions = (func) => {
-	getter("get_discussions", null, false, func);
+	getter("get", null, false, func);
 };
 
 const listenForNewDiscussion = (func) => {
-	listener("created_discussion", func);
+	listener("created", func);
 };
 
 const createDiscussion = (data, func) => {
 	setter(
-		"create_discussion",
+		"create",
 		{ title: data.title, theme: data.theme, time_limit: data.expiration },
 		false,
 		func
@@ -20,7 +20,7 @@ const createDiscussion = (data, func) => {
 
 const joinDiscussion = (data, func) => {
 	setter(
-		"join_discussion",
+		"join",
 		{ discussion_id: data.discussionId, name: data.name },
 		true,
 		func
@@ -28,11 +28,11 @@ const joinDiscussion = (data, func) => {
 };
 
 const getDiscussionNames = (data, func) => {
-	getter("get_discussion_names", { discussion_id: data }, false, func);
+	getter("get_names", { discussion_id: data }, false, func);
 };
 
 const leaveDiscussion = (data, func) => {
-	setter("leave_discussion", { discussion_id: data }, true, func);
+	setter("leave", { discussion_id: data }, true, func);
 };
 
 export {

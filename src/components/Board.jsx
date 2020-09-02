@@ -40,6 +40,7 @@ class Board extends React.Component {
 		createDiscussion(
 			{ title: title, theme: theme, expiration: 1000 },
 			(data) => {
+				console.log(data);
 				console.log("new discussion created!");
 			}
 		);

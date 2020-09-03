@@ -148,6 +148,17 @@ const loadDiscussion = (discussionID, userID) => {
 						});
 					}
 				}
+				if (res.length === 0) {
+					// dispatch the final loaded data
+					dispatch({
+						type: LOAD_DISCUSSION_FULFILLED,
+						payload: {
+							blocks: [],
+							posts: [],
+							savedBlocks: [],
+						},
+					});
+				}
 			} catch (e) {
 				console.log(e);
 			}
@@ -302,9 +313,10 @@ const blockSearch = (discussionID, query) => {
 		};
 		socket.emit("search_basic", data, (res) => {
 			res = JSON.parse(res);
+			console.log(res);
 			dispatch({
 				type: SEARCH_DISCUSSION_FULFILLED,
-				payload: res.blocks,
+				payload: res,
 			});
 		});
 	};
@@ -321,7 +333,7 @@ const tagSearch = (discussionID, query) => {
 			res = JSON.parse(res);
 			dispatch({
 				type: SEARCH_DISCUSSION_FULFILLED,
-				payload: res.blocks,
+				payload: res,
 			});
 		});
 	};

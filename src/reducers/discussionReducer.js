@@ -84,9 +84,10 @@ const discussionReducer = (state = defaultState, action) => {
 		}
 		case BLOCK_TAGGED: {
 			const blocks = { ...state.blocks };
-			blocks[action.payload.blockID].tags[action.payload.tag] = {
+			blocks[action.payload.blockID].tags.push({
+				tag: action.payload.tag,
 				owner: action.payload.userID,
-			};
+			});
 			return { ...state, blocks: blocks };
 		}
 		case BLOCK_UNTAGGED: {

@@ -31,17 +31,20 @@ class TagEditor extends React.Component {
 			});
 		}
 
-		// if the new list of tags includes the temporary tag, remove it
+		// if the new list of tags includes the temporary add tag, remove it
 		if (
 			this.state.tempAdd &&
-			Object.keys(this.props.tags).includes(this.state.tempAdd)
+			this.props.tags.filter((o) => o.tag === this.state.tempAdd).length >
+				0
 		) {
 			this.setState({ tempAdd: null });
 		}
 
+		// if the new list of tags does not include the temporary remove tag, remove it
 		if (
 			this.state.tempRemove &&
-			!Object.keys(this.props.tags).includes(this.state.tempRemove)
+			this.props.tags.filter((o) => o.tag !== this.state.tempRemove)
+				.length <= 0
 		) {
 			this.setState({ tempRemove: null });
 		}
@@ -49,7 +52,10 @@ class TagEditor extends React.Component {
 
 	handleKeypress(e) {
 		if (e.keyCode === 13) {
-			if (!Object.keys(this.props.tags).includes(this.state.value)) {
+			if (
+				this.props.tags.filter((o) => o.tag === this.state.value)
+					.length <= 0
+			) {
 				this.props.addTag(this.state.value);
 				this.setState({
 					editing: false,
@@ -89,7 +95,7 @@ class TagEditor extends React.Component {
 					onChange={this.handleChange}
 				/>
 			);
-		} else if (this.props.tags && Object.keys(this.props.tags).length > 0) {
+		} else if (this.props.tags && this.props.tags.length > 0) {
 			editor = (
 				<div
 					className="tag-button"
@@ -108,7 +114,7 @@ class TagEditor extends React.Component {
 			if (tag !== this.state.tempRemove) {
 				const newElt = (
 					<div className="tag" key={this.props.blockID + tag}>
-						{tag}
+						{this.props.tags[tag].tag}
 						{this.props.tags[tag].owner === this.props.userID ? (
 							<div
 								className="tag-close"
@@ -120,7 +126,7 @@ class TagEditor extends React.Component {
 								×
 							</div>
 						) : (
-							<div></div>
+							<div />
 						)}
 					</div>
 				);

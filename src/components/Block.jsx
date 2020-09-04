@@ -1,4 +1,6 @@
 import React from "react";
+import Latex from "react-latex";
+
 import TagEditor from "./TagEditor";
 import AbsoluteMenu from "./AbsoluteMenu";
 
@@ -63,7 +65,7 @@ class Block extends React.Component {
 							: {}
 					}
 				>
-					{this.props.content || "Error loading block"}
+					<Latex>{this.props.content || "Error loading block"}</Latex>
 					{this.props.showSaved && this.props.saved ? (
 						<span className="block-saved-label">Saved Block</span>
 					) : null}

@@ -18,6 +18,22 @@
 	visibility: visible;
 }
 
+.block > p,
+.block > ul,
+.block > ol,
+.block > h1,
+.block > h2,
+.block > h3,
+.block > h4,
+.block > h5,
+.block > a {
+	margin: 0;
+}
+
+a {
+	color: #ededed;
+}
+
 .block {
 	/*margin: 0px 5px;*/
 	color: #ededed;

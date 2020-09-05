@@ -1,5 +1,6 @@
 import React from "react";
 import Latex from "react-latex";
+import ReactMarkdown from "react-markdown";
 
 import TagEditor from "./TagEditor";
 import AbsoluteMenu from "./AbsoluteMenu";
@@ -50,6 +51,17 @@ class Block extends React.Component {
 			);
 		}
 
+		// if there's content and it includes two $$, LaTeX parse it, otherwise, markdown parse it
+		const content = this.props.content ? (
+			this.props.content.match(/(\$.+\$)/g) ? (
+				<Latex>{this.props.content}</Latex>
+			) : (
+				<ReactMarkdown source={this.props.content} />
+			)
+		) : (
+			"Error loading block"
+		);
+
 		return (
 			<div className="block-wrapper">
 				<div
@@ -65,7 +77,8 @@ class Block extends React.Component {
 							: {}
 					}
 				>
-					<Latex>{this.props.content || "Error loading block"}</Latex>
+					{content}
+
 					{this.props.showSaved && this.props.saved ? (
 						<span className="block-saved-label">Saved Block</span>
 					) : null}
